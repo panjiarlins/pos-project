@@ -20,15 +20,11 @@ function unsetAuthUserActionCreator() {
   };
 }
 
-function asyncSetAuthUser({ email, password, isAdmin }) {
+function asyncSetAuthUser({ email, password }) {
   return async (dispatch) => {
     try {
       // GET user login
-      const { data } = await api.post('/users/auth', {
-        email,
-        password,
-        isAdmin,
-      });
+      const { data } = await api.post('/users/auth', { email, password });
 
       localStorage.setItem('token', data.data.token);
       dispatch(setAuthUserActionCreator(data.data.user));
