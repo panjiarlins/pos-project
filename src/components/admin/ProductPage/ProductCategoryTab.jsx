@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useMuiNewValue } from '../../../hooks';
 import ProductList from './ProductList';
 
-function CategoryList() {
+function ProductCategoryTab() {
   const categories = useSelector((states) => states.categories);
   const [value, handleValueChange] = useMuiNewValue('0');
 
@@ -15,22 +15,21 @@ function CategoryList() {
           aria-label="Product Tabs"
           variant="scrollable"
           scrollButtons="auto"
-          TabIndicatorProps={{ sx: { bgcolor: '#B32318' } }}
+          TabIndicatorProps={{ sx: { bgcolor: 'error.main' } }}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
           onChange={handleValueChange}
-          className="mx-auto max-w-[80vw]"
         >
           <Tab
             label="All"
             value="0"
-            sx={{ '&.Mui-selected': { color: '#B32318' } }}
+            sx={{ '&.Mui-selected': { color: 'error.main' } }}
           />
           {categories.map((category, index) => (
             <Tab
               key={category.id}
               label={category.name}
               value={`${index + 1}`}
-              sx={{ '&.Mui-selected': { color: '#B32318' } }}
+              sx={{ '&.Mui-selected': { color: 'error.main' } }}
             />
           ))}
         </TabList>
@@ -47,4 +46,4 @@ function CategoryList() {
   );
 }
 
-export default CategoryList;
+export default ProductCategoryTab;

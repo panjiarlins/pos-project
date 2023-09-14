@@ -1,18 +1,23 @@
-import { DashboardRounded, StoreRounded } from '@mui/icons-material';
+import {
+  AssessmentRounded,
+  CategoryRounded,
+  DashboardRounded,
+  Inventory2Rounded,
+  LogoutRounded,
+  SettingsRounded,
+  StoreRounded,
+  SupervisorAccountRounded,
+} from '@mui/icons-material';
 import {
   Avatar,
   Box,
   Drawer,
   IconButton,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Stack,
   Typography,
 } from '@mui/material';
+import { SidebarAdminListItem } from './SidebarAdminListItem';
 
 function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
   return (
@@ -21,27 +26,55 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
       open={isSidebarOpen}
       onClose={() => setIsSidebarOpen(false)}
     >
-      <Stack direction="column">
+      <Stack
+        direction="column"
+        spacing={4}
+        color="grey"
+        width={{ xs: '50vw', md: '20vw' }}
+        my="1em"
+      >
         <IconButton disabled>
-          <Avatar>
+          <Avatar sx={{ bgcolor: 'error.main' }}>
             <StoreRounded />
           </Avatar>
         </IconButton>
         <Box>
-          <Typography variant="body2">MANAGE</Typography>
+          <Typography marginX="auto" variant="body2" className="max-w-[90%]">
+            MANAGE
+          </Typography>
           <List>
-            <ListItem>
-              <ListItemButton>
-                <ListItemIcon>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <DashboardRounded />
-                    </Avatar>
-                  </ListItemAvatar>
-                </ListItemIcon>
-                <ListItemText primary="1" />
-              </ListItemButton>
-            </ListItem>
+            <SidebarAdminListItem text="Dashboard" to="/">
+              <DashboardRounded />
+            </SidebarAdminListItem>
+            <SidebarAdminListItem text="Products" to="/">
+              <Inventory2Rounded />
+            </SidebarAdminListItem>
+            <SidebarAdminListItem text="Categories" to="/categories">
+              <CategoryRounded />
+            </SidebarAdminListItem>
+            <SidebarAdminListItem text="Report" to="/admin-report">
+              <AssessmentRounded />
+            </SidebarAdminListItem>
+          </List>
+        </Box>
+        <Box>
+          <Typography marginX="auto" variant="body2" className="max-w-[90%]">
+            PREFERENCES
+          </Typography>
+          <List>
+            <SidebarAdminListItem text="Admin Settings" to="/admin">
+              <SupervisorAccountRounded />
+            </SidebarAdminListItem>
+            <SidebarAdminListItem text="General" to="/">
+              <SettingsRounded />
+            </SidebarAdminListItem>
+          </List>
+        </Box>
+        <Box>
+          <List>
+            <SidebarAdminListItem text="Logout" to="/logout">
+              <LogoutRounded />
+            </SidebarAdminListItem>
           </List>
         </Box>
       </Stack>

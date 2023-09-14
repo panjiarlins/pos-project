@@ -1,6 +1,5 @@
 import { DeleteRounded, EditNoteRounded } from '@mui/icons-material';
 import {
-  FormControlLabel,
   IconButton,
   Stack,
   Switch,
@@ -43,40 +42,36 @@ function ProductItem() {
         <TableCell>{product.name}</TableCell>
         <TableCell>{product.description}</TableCell>
         <TableCell align="center">
-          <FormControlLabel
-            control={
-              <Tooltip
-                title={`Product status: ${
-                  product.isActive ? 'Active' : 'Inactive'
-                }`}
-                arrow
-              >
-                <Switch
-                  checked={product.isActive}
-                  value={product.id}
-                  // onChange={handleProductStatus}
-                  // sx={{
-                  //   '.Mui-checked': {
-                  //     color: 'limegreen',
-                  //   },
-                  //   '.Mui-checked + .MuiSwitch-track': {
-                  //     bgcolor: 'limegreen',
-                  //   },
-                  // }}
-                />
-              </Tooltip>
-            }
-          />
+          <Tooltip
+            title={`Product status: ${
+              product.isActive ? 'Active' : 'Inactive'
+            }`}
+            arrow
+          >
+            <Switch
+              checked={product.isActive}
+              value={product.id}
+              // onChange={handleProductStatus}
+              sx={{
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: 'success.light',
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: 'success.light',
+                },
+              }}
+            />
+          </Tooltip>
         </TableCell>
         <TableCell>
           <Stack direction="row">
             <Tooltip title="Edit product" arrow>
-              <IconButton className="hover:text-[#528BFF]">
+              <IconButton sx={{ '&:hover': { color: 'info.main' } }}>
                 <EditNoteRounded />
               </IconButton>
             </Tooltip>
             <Tooltip title="Delete product" arrow>
-              <IconButton className="hover:text-[#F97066]">
+              <IconButton sx={{ '&:hover': { color: 'error.main' } }}>
                 <DeleteRounded />
               </IconButton>
             </Tooltip>

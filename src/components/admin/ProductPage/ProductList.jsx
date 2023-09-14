@@ -24,14 +24,14 @@ function ProductList({ categoryId }) {
       sx={{
         borderRadius: '0',
         m: '0 auto',
-        maxWidth: '70vw',
       }}
     >
       <Table aria-label="Data Table">
         <TableHead>
           <TableRow
             sx={{
-              backgroundColor: '#FEE4E2',
+              bgcolor: 'error.main',
+              '& > *': { color: 'white' },
             }}
           >
             <TableCell>ID</TableCell>
