@@ -20,18 +20,17 @@ function unsetAuthUserActionCreator() {
   };
 }
 
-function asyncSetAuthUser({ email, password, isAdmin }) {
+function asyncSetAuthUser({ username, password }) {
   return async (dispatch) => {
     try {
       // GET user login
       const { data } = await api.post('/users/auth', {
-        email,
+        username,
         password,
-        isAdmin,
       });
-
-      localStorage.setItem('token', data.data.token);
-      dispatch(setAuthUserActionCreator(data.data.user));
+      console.log(data.data);
+      localStorage.setItem('token', data.token);
+      dispatch(setAuthUserActionCreator(data.user));
     } catch (error) {
       console.log(error?.response?.data?.message || error?.message);
     }
