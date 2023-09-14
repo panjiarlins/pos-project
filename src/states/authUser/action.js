@@ -20,17 +20,14 @@ function unsetAuthUserActionCreator() {
   };
 }
 
-function asyncSetAuthUser({ username, password }) {
+function asyncSetAuthUser({ email, password }) {
   return async (dispatch) => {
     try {
       // GET user login
-      const { data } = await api.post('/users/auth', {
-        username,
-        password,
-      });
-      console.log(data.data);
-      localStorage.setItem('token', data.token);
-      dispatch(setAuthUserActionCreator(data.user));
+      const { data } = await api.post('/users/auth', { email, password });
+
+      localStorage.setItem('token', data.data.token);
+      dispatch(setAuthUserActionCreator(data.data.user));
     } catch (error) {
       console.log(error?.response?.data?.message || error?.message);
     }
