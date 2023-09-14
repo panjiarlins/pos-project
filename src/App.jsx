@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
+import { ChakraProvider } from '@chakra-ui/react';
 import { asyncPreloadProcess } from './states/isPreload/action';
 import LoginPageAdmin from './pages/admin/LoginPageAdmin';
 import DashboardPage from './pages/admin/DashboardPage';
@@ -27,8 +28,22 @@ function App() {
   if (authUser === null) {
     return (
       <Routes>
-        <Route path="/admin-login" element={<LoginPageAdmin />} />
-        <Route path="/cashier-login" element={<LoginPageCashier />} />
+        <Route
+          path="/admin-login"
+          element={
+            <ChakraProvider>
+              <LoginPageAdmin />
+            </ChakraProvider>
+          }
+        />
+        <Route
+          path="/cashier-login"
+          element={
+            <ChakraProvider>
+              <LoginPageCashier />
+            </ChakraProvider>
+          }
+        />
       </Routes>
     );
   }
