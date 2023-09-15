@@ -35,14 +35,14 @@ function NavbarAdmin() {
                 {authUser.fullname}
               </Typography>
               <Typography variant="body2" align="right" color="#697586">
-                {authUser.isCashier ? 'Admin' : 'Admin | Cashier'}
+                {authUser.isCashier ? 'Admin | Cashier' : 'Admin'}
               </Typography>
             </Stack>
             <IconButton>
               <Avatar
                 alt={authUser.fullname}
                 src="/test"
-                sx={{ bgcolor: 'skyblue' }}
+                sx={{ bgcolor: 'error.main' }}
               />
             </IconButton>
           </Stack>

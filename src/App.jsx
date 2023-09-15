@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { asyncPreloadProcess } from './states/isPreload/action';
 import LoginPageAdmin from './pages/admin/LoginPageAdmin';
-import DashboardPage from './pages/admin/DashboardPage';
+import ProductPage from './pages/admin/ProductPage';
 import AdminPage from './pages/admin/AdminPage';
 import LoginPageCashier from './pages/cashier/LoginPageCashier';
 import CategoryPage from './pages/admin/CategoryPage';
@@ -53,6 +53,7 @@ function App() {
       {authUser.isAdmin &&
         (() => (
           <>
+            <Route path="/" element={<ProductPage />} />
             <Route
               path="/admin"
               element={
@@ -62,8 +63,6 @@ function App() {
               }
             />
             <Route path="/categories" element={<CategoryPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/products" element={<DashboardPage />} />
             <Route path="/admin-report" element={<ReportPageAdmin />} />
           </>
         ))()}
