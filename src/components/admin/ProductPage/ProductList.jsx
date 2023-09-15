@@ -11,11 +11,11 @@ import { useDispatch } from 'react-redux';
 import ProductItem from './ProductItem';
 import { asyncReceiveProducts } from '../../../states/products/action';
 
-function ProductList({ categoryId }) {
+function ProductList({ currCategoryTab }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(asyncReceiveProducts({ categoryId }));
+    dispatch(asyncReceiveProducts({ categoryId: currCategoryTab }));
   }, [dispatch]);
 
   return (
@@ -30,8 +30,8 @@ function ProductList({ categoryId }) {
         <TableHead>
           <TableRow
             sx={{
-              bgcolor: 'error.main',
-              '& > *': { color: 'white' },
+              bgcolor: 'error.light',
+              '& > *': { color: '#fff' },
             }}
           >
             <TableCell>ID</TableCell>
@@ -42,7 +42,7 @@ function ProductList({ categoryId }) {
             <TableCell />
           </TableRow>
         </TableHead>
-        <ProductItem />
+        <ProductItem {...{ currCategoryTab }} />
       </Table>
     </TableContainer>
   );

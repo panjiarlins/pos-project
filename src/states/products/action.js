@@ -14,7 +14,8 @@ function receiveProductsActionCreator(products) {
 function asyncReceiveProducts({ categoryId, sortBy, orderBy } = {}) {
   return async (dispatch) => {
     try {
-      const categoryIdQuery = categoryId ? `categoryId=${categoryId}` : '';
+      const categoryIdQuery =
+        categoryId && categoryId !== '0' ? `categoryId=${categoryId}` : '';
       const sortByQuery = sortBy ? `sortBy=${sortBy}` : '';
       const orderByQuery = orderBy ? `orderBy=${orderBy}` : '';
 
@@ -28,4 +29,19 @@ function asyncReceiveProducts({ categoryId, sortBy, orderBy } = {}) {
   };
 }
 
-export { ActionType, receiveProductsActionCreator, asyncReceiveProducts };
+function asyncCreateProduct(formData) {
+  return async () => {
+    try {
+      await api.post('/products', formData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export {
+  ActionType,
+  receiveProductsActionCreator,
+  asyncReceiveProducts,
+  asyncCreateProduct,
+};

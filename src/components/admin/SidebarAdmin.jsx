@@ -28,7 +28,7 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
     >
       <Stack
         direction="column"
-        spacing={4}
+        spacing={1}
         color="grey"
         width={{ xs: '50vw', md: '20vw' }}
         my="1em"

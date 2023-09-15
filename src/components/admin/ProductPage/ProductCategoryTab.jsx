@@ -6,18 +6,18 @@ import ProductList from './ProductList';
 
 function ProductCategoryTab() {
   const categories = useSelector((states) => states.categories);
-  const [value, handleValueChange] = useMuiNewValue('0');
+  const [currCategoryTab, handleCurrCategoryTabChange] = useMuiNewValue('0');
 
   return (
     <Box>
-      <TabContext value={value}>
+      <TabContext value={currCategoryTab}>
         <TabList
           aria-label="Product Tabs"
           variant="scrollable"
           scrollButtons="auto"
           TabIndicatorProps={{ sx: { bgcolor: 'error.main' } }}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
-          onChange={handleValueChange}
+          onChange={handleCurrCategoryTabChange}
         >
           <Tab
             label="All"
@@ -34,11 +34,11 @@ function ProductCategoryTab() {
           ))}
         </TabList>
         <TabPanel value="0">
-          <ProductList />
+          <ProductList {...{ currCategoryTab }} />
         </TabPanel>
         {categories.map((category, index) => (
           <TabPanel key={category.id} value={`${index + 1}`}>
-            <ProductList categoryId={category.id} />
+            <ProductList {...{ currCategoryTab }} />
           </TabPanel>
         ))}
       </TabContext>
