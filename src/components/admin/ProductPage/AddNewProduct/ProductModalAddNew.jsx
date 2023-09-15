@@ -21,9 +21,9 @@ import {
 } from '../../../../hooks';
 
 function ProductModalAddNew({
-  currCategoryTab,
   isAddNewProductOpen,
   setIsAddNewProductOpen,
+  setCurrCategoryTab,
 }) {
   const dispatch = useDispatch();
   const [isProductActive, handleIsProductActive] = useMuiNewValue(true);
@@ -42,9 +42,10 @@ function ProductModalAddNew({
     formData.append('categoryId', JSON.stringify(selectedCategories));
 
     dispatch(asyncCreateProduct(formData));
-    dispatch(asyncReceiveProducts({ categoryId: currCategoryTab }));
+    dispatch(asyncReceiveProducts());
 
     setIsAddNewProductOpen(false);
+    setCurrCategoryTab('0');
   };
   return (
     <Dialog

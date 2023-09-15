@@ -14,8 +14,7 @@ function receiveProductsActionCreator(products) {
 function asyncReceiveProducts({ categoryId, sortBy, orderBy } = {}) {
   return async (dispatch) => {
     try {
-      const categoryIdQuery =
-        categoryId && categoryId !== '0' ? `categoryId=${categoryId}` : '';
+      const categoryIdQuery = categoryId ? `categoryId=${categoryId}` : '';
       const sortByQuery = sortBy ? `sortBy=${sortBy}` : '';
       const orderByQuery = orderBy ? `orderBy=${orderBy}` : '';
 

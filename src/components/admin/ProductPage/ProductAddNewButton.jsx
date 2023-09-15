@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import ProductModalAddNew from './AddNewProduct/ProductModalAddNew';
 
-function ProductAddNewButton() {
+function ProductAddNewButton({ setCurrCategoryTab }) {
   const [isAddNewProductOpen, setIsAddNewProductOpen] = useState(false);
 
   return (
@@ -20,8 +20,7 @@ function ProductAddNewButton() {
         </Button>
       </Tooltip>
       <ProductModalAddNew
-        isAddNewProductOpen={isAddNewProductOpen}
-        setIsAddNewProductOpen={setIsAddNewProductOpen}
+        {...{ isAddNewProductOpen, setIsAddNewProductOpen, setCurrCategoryTab }}
       />
     </>
   );

@@ -9,9 +9,12 @@ import ProductCategoryTab from '../../components/admin/ProductPage/ProductCatego
 import ProductSearchInput from '../../components/admin/ProductPage/ProductSearchInput';
 import ProductDownloadButton from '../../components/admin/ProductPage/ProductDownloadButton';
 import ProductAddNewButton from '../../components/admin/ProductPage/ProductAddNewButton';
+import { useMuiNewValue } from '../../hooks';
 
 function ProductPage() {
   const dispatch = useDispatch();
+  const [currCategoryTab, handleCurrCategoryTabChange, setCurrCategoryTab] =
+    useMuiNewValue('0');
 
   useEffect(() => {
     dispatch(asyncReceiveCategories());
@@ -35,11 +38,13 @@ function ProductPage() {
             <Box sx={{ flexGrow: 1 }} display={{ xs: 'none', md: 'inherit' }} />
             <Stack direction="row" spacing={1} justifyContent="center">
               <ProductDownloadButton />
-              <ProductAddNewButton />
+              <ProductAddNewButton {...{ setCurrCategoryTab }} />
             </Stack>
           </Stack>
         </Box>
-        <ProductCategoryTab />
+        <ProductCategoryTab
+          {...{ currCategoryTab, handleCurrCategoryTabChange }}
+        />
       </Stack>
     </>
   );

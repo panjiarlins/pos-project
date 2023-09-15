@@ -1,12 +1,10 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useMuiNewValue } from '../../../hooks';
 import ProductList from './ProductList';
 
-function ProductCategoryTab() {
+function ProductCategoryTab({ currCategoryTab, handleCurrCategoryTabChange }) {
   const categories = useSelector((states) => states.categories);
-  const [currCategoryTab, handleCurrCategoryTabChange] = useMuiNewValue('0');
 
   return (
     <Box>
@@ -34,11 +32,14 @@ function ProductCategoryTab() {
           ))}
         </TabList>
         <TabPanel value="0">
-          <ProductList {...{ currCategoryTab }} />
+          <ProductList />
         </TabPanel>
         {categories.map((category, index) => (
           <TabPanel key={category.id} value={`${index + 1}`}>
-            <ProductList {...{ currCategoryTab }} />
+            <ProductList
+              currCategoryId={category.id}
+              currCategoryTab={currCategoryTab}
+            />
           </TabPanel>
         ))}
       </TabContext>
