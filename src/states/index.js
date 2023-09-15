@@ -3,6 +3,7 @@ import isPreloadReducer from './isPreload/reducer';
 import authUserReducer from './authUser/reducer';
 import categoriesReducer from './categories/reducer';
 import productsReducer from './products/reducer';
+import usersReducer from './users/reducer';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     authUser: authUserReducer,
     categories: categoriesReducer,
     products: productsReducer,
+    users: usersReducer,
   },
 });
 

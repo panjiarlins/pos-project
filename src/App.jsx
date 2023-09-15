@@ -53,7 +53,14 @@ function App() {
       {authUser.isAdmin &&
         (() => (
           <>
-            <Route path="/admin" element={<AdminPage />} />
+            <Route
+              path="/admin"
+              element={
+                <ChakraProvider>
+                  <AdminPage />
+                </ChakraProvider>
+              }
+            />
             <Route path="/categories" element={<CategoryPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/products" element={<DashboardPage />} />
