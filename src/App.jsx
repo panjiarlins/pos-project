@@ -54,7 +54,14 @@ function App() {
         (() => (
           <>
             <Route path="/" element={<ProductPage />} />
-            <Route path="/admin" element={<AdminPage />} />
+            <Route
+              path="/admin"
+              element={
+                <ChakraProvider>
+                  <AdminPage />
+                </ChakraProvider>
+              }
+            />
             <Route path="/categories" element={<CategoryPage />} />
             <Route path="/admin-report" element={<ReportPageAdmin />} />
           </>
