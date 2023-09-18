@@ -2,25 +2,16 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { ProductsCard } from '../../components/cashier/MainPage/Products';
 import { asyncReceiveProducts } from '../../states/products/action';
+import { asyncReceiveCategories } from '../../states/categories/action';
 // import OrderDetailSidebar from '../../components/cashier/MainPage/sidebar';
 
 function MainPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // const fetchProducts = () => {
-    //   try {
-    //     dispatch(asyncReceiveProducts());
-    //     console.log('asyncReceiveProducts fired');
-    //   } catch (error) {
-    //     console.error('Error fetching products:', error);
-    //   }
-    // };
-
-    // fetchProducts();
-    console.log('test');
+    dispatch(asyncReceiveCategories());
     dispatch(asyncReceiveProducts());
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>

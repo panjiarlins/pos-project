@@ -1,16 +1,37 @@
-import { Flex, Heading, Input, Button, Text } from '@chakra-ui/react';
+import { Flex, Heading, Input, Button, Text, useToast } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import useValueInput from '../../hooks/useValueInput';
 import { asyncSetAuthUser } from '../../states/authUser/action';
 
 function LoginPageCashier() {
+  const toast = useToast();
   const [username, handleUsernameChange] = useValueInput();
   const [password, handlePasswordChange] = useValueInput();
-  const dispacth = useDispatch();
+  const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispacth(asyncSetAuthUser({ username, password }));
+    dispatch(asyncSetAuthUser({ username, password }))
+      .then(() => {
+        // Display a success toast
+        toast({
+          title: 'Login Successful',
+          description: 'You have successfully logged in.',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+      })
+      .catch((error) => {
+        toast({
+          title: 'Login Failed',
+          description: error?.response?.data?.message || error?.message,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
   };
   return (
     <Flex

@@ -43,16 +43,16 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
             MANAGE
           </Typography>
           <List>
-            <SidebarAdminListItem text="Dashboard" to="/">
+            <SidebarAdminListItem text="Dashboard" to="/admin">
               <DashboardRounded />
             </SidebarAdminListItem>
-            <SidebarAdminListItem text="Products" to="/">
+            <SidebarAdminListItem text="Products" to="/admin/products">
               <Inventory2Rounded />
             </SidebarAdminListItem>
-            <SidebarAdminListItem text="Categories" to="/categories">
+            <SidebarAdminListItem text="Categories" to="/admin/categories">
               <CategoryRounded />
             </SidebarAdminListItem>
-            <SidebarAdminListItem text="Report" to="/admin-report">
+            <SidebarAdminListItem text="Report" to="/admin/report">
               <AssessmentRounded />
             </SidebarAdminListItem>
           </List>
@@ -62,10 +62,13 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
             PREFERENCES
           </Typography>
           <List>
-            <SidebarAdminListItem text="Admin Settings" to="/admin">
+            <SidebarAdminListItem
+              text="Admin Settings"
+              to="/admin/administrator"
+            >
               <SupervisorAccountRounded />
             </SidebarAdminListItem>
-            <SidebarAdminListItem text="General" to="/">
+            <SidebarAdminListItem text="General" to="/admin/general">
               <SettingsRounded />
             </SidebarAdminListItem>
           </List>

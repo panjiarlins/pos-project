@@ -17,7 +17,7 @@ import useValueInput from '../../hooks/useValueInput';
 
 function LoginPageAdmin() {
   const toast = useToast();
-  const [username, handkeUsernameChange] = useValueInput();
+  const [username, handleUsernameChange] = useValueInput();
   const [password, handlePasswordChange] = useValueInput();
   const dispatch = useDispatch();
 
@@ -36,11 +36,9 @@ function LoginPageAdmin() {
         });
       })
       .catch((error) => {
-        console.log(error);
-
         toast({
           title: 'Login Failed',
-          description: 'An error occurred while logging in. Please try again.',
+          description: error?.response?.data?.message || error?.message,
           status: 'error',
           duration: 3000,
           isClosable: true,
@@ -102,7 +100,7 @@ function LoginPageAdmin() {
           <Box as="form" mt={10}>
             <Stack spacing={5}>
               <Input
-                placeholder="Email"
+                placeholder="Username"
                 bg="gray.100"
                 border={0}
                 color="gray.500"
@@ -110,7 +108,7 @@ function LoginPageAdmin() {
                   color: 'gray.500',
                 }}
                 // onChange={(e) => formik.setFieldValue('email', e.target.value)}
-                onChange={handkeUsernameChange}
+                onChange={handleUsernameChange}
               />
               <Input
                 type="password"

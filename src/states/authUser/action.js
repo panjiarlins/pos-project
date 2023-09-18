@@ -29,24 +29,20 @@ function receiveUsersActionCreator(users) {
   };
 }
 
-function asyncSetAuthUser({ email, password }) {
+function asyncSetAuthUser({ username, password }) {
   return async (dispatch) => {
-    try {
-      // GET user login
-      const { data } = await api.post('/users/auth', { email, password });
-
-      localStorage.setItem('token', data.data.token);
-      dispatch(setAuthUserActionCreator(data.data.user));
-    } catch (error) {
-      console.log(error?.response?.data?.message || error?.message);
-    }
+    // GET user login
+    const { data } = await api.post('/users/auth', { username, password });
+    localStorage.setItem('token', data.data.token);
+    window.location.reload();
+    dispatch(setAuthUserActionCreator(data.data.user));
   };
 }
 
 function asyncUnsetAuthUser() {
   return (dispatch) => {
-    dispatch(unsetAuthUserActionCreator());
     localStorage.removeItem('token');
+    dispatch(unsetAuthUserActionCreator());
   };
 }
 
@@ -56,7 +52,6 @@ function asyncRegisterUser(formData) {
       // POST user register
       const { data } = await api.post('/users', formData);
       dispatch(asyncSetAuthUser(data.data.user));
-      console.log('register', data);
     } catch (error) {
       console.log(error?.response?.data?.message || error?.message);
     }

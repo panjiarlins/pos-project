@@ -110,21 +110,21 @@ function CustomModal({ isOpen, onClose, product }) {
           <FormControl mt="4">
             <FormLabel>Variant | Choose Many</FormLabel>
             <Stack direction="row" spacing={2}>
-              {console.log(product)}
-              {product.Variants?.map((variantOption) => (
-                <Button
-                  key={variantOption.id}
-                  size="sm"
-                  colorScheme={
-                    selectedVariants.includes(variantOption.name)
-                      ? 'red'
-                      : 'gray'
-                  }
-                  onClick={() => handleButtonClick(variantOption.name)}
-                >
-                  {variantOption.name}
-                </Button>
-              ))}
+              {!!product &&
+                product.Variants?.map((variantOption) => (
+                  <Button
+                    key={variantOption.id}
+                    size="sm"
+                    colorScheme={
+                      selectedVariants.includes(variantOption.name)
+                        ? 'red'
+                        : 'gray'
+                    }
+                    onClick={() => handleButtonClick(variantOption.name)}
+                  >
+                    {variantOption.name}
+                  </Button>
+                ))}
             </Stack>
           </FormControl>
 
