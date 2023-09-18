@@ -69,7 +69,14 @@ function App() {
       {authUser.isCashier &&
         (() => (
           <>
-            <Route path="/main" element={<MainPage />} />
+            <Route
+              path="/main"
+              element={
+                <ChakraProvider>
+                  <MainPage />
+                </ChakraProvider>
+              }
+            />
             <Route path="/cashier-report" element={<ReportPageCashier />} />
           </>
         ))()}
