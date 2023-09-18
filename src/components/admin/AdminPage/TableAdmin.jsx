@@ -144,7 +144,6 @@ function TableAdmin() {
           + Admin
         </Button>
       </Flex>
-
       <Table variant="simple">
         <Thead>
           <Tr>
