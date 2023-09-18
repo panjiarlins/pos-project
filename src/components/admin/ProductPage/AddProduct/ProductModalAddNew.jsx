@@ -9,29 +9,32 @@ import {
 import { useDispatch } from 'react-redux';
 import ProductDetailsForm from './ProductDetailsForm';
 import ProductCategoryCheckBox from './ProductCategoryCheckBox';
-import {
-  asyncCreateProduct,
-  asyncReceiveProducts,
-} from '../../../../states/products/action';
+import { asyncCreateProduct } from '../../../../states/products/action';
 import {
   useMuiNewValue,
   useSingleFileInput,
-  useToggleList,
+  useCheckBoxList,
   useValueInput,
 } from '../../../../hooks';
+import ProductVariants from './ProductVariants';
 
 function ProductModalAddNew({
   isAddNewProductOpen,
   setIsAddNewProductOpen,
-  setCurrCategoryTab,
+  handleOnReload,
 }) {
   const dispatch = useDispatch();
-  const [isProductActive, handleIsProductActive] = useMuiNewValue(true);
-  const [productImage, handleProductImage] = useSingleFileInput();
-  const [productName, handleProductName] = useValueInput();
-  const [productDescription, handleProductDescription] = useValueInput();
-  const [selectedCategories, handleSelectedCategories] = useToggleList([]);
-  // const [productPrice, handleProductPrice] = useValueInput();
+  const [isProductActive, handleIsProductActive, setIsProductActive] =
+    useMuiNewValue(true);
+  const [productImage, handleProductImage, setProductImage] =
+    useSingleFileInput(null);
+  const [productName, handleProductName, setProductName] = useValueInput('');
+  const [productDescription, handleProductDescription, setProductDescription] =
+    useValueInput('');
+  const [selectedCategories, handleSelectedCategories, setSelectedCategories] =
+    useCheckBoxList([]);
+  const [productVariants, handleProductVariants, setProductVariants] =
+    useValueInput([]);
 
   const handleOnSave = () => {
     const formData = new FormData();
@@ -40,13 +43,19 @@ function ProductModalAddNew({
     formData.append('name', productName);
     formData.append('description', productDescription);
     formData.append('categoryId', JSON.stringify(selectedCategories));
-
-    dispatch(asyncCreateProduct(formData));
-    dispatch(asyncReceiveProducts());
-
-    setIsAddNewProductOpen(false);
-    setCurrCategoryTab('0');
+    formData.append('variants', productVariants);
+    dispatch(asyncCreateProduct(formData)).then(() => {
+      handleOnReload();
+      setIsAddNewProductOpen(false);
+      setIsProductActive(true);
+      setProductImage(null);
+      setProductName('');
+      setProductDescription('');
+      setSelectedCategories([]);
+      setProductVariants([]);
+    });
   };
+
   return (
     <Dialog
       fullWidth
@@ -70,6 +79,7 @@ function ProductModalAddNew({
           <ProductCategoryCheckBox
             {...{ selectedCategories, handleSelectedCategories }}
           />
+          <ProductVariants {...{ productVariants, handleProductVariants }} />
         </Stack>
       </DialogContent>
       <DialogActions>

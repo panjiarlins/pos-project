@@ -9,17 +9,39 @@ import ProductCategoryTab from '../../components/admin/ProductPage/ProductCatego
 import ProductSearchInput from '../../components/admin/ProductPage/ProductSearchInput';
 import ProductDownloadButton from '../../components/admin/ProductPage/ProductDownloadButton';
 import ProductAddNewButton from '../../components/admin/ProductPage/ProductAddNewButton';
-import { useMuiNewValue } from '../../hooks';
+import { useMuiNewValue, useValueInput } from '../../hooks';
+import SelectSortBy from '../../components/admin/ProductPage/SelectSortBy';
+import SelectOrderBy from '../../components/admin/ProductPage/SelectOrderBy';
 
 function ProductPage() {
   const dispatch = useDispatch();
-  const [currCategoryTab, handleCurrCategoryTabChange, setCurrCategoryTab] =
-    useMuiNewValue('0');
+  const [currCategoryId, handleCurrCategoryIdChange] = useMuiNewValue('0');
+  const [sortBy, handleSortByChange] = useValueInput('updatedAt');
+  const [orderBy, handleOrderByChange] = useValueInput('DESC');
+  const [searchName, handleSearchNameChange] = useValueInput('');
 
   useEffect(() => {
     dispatch(asyncReceiveCategories());
-    dispatch(asyncReceiveProducts());
-  }, [dispatch]);
+    dispatch(
+      asyncReceiveProducts({
+        name: searchName,
+        categoryId: currCategoryId,
+        sortBy,
+        orderBy,
+      })
+    );
+  }, [dispatch, currCategoryId, sortBy, orderBy]);
+
+  const handleOnReload = () => {
+    dispatch(
+      asyncReceiveProducts({
+        name: searchName,
+        categoryId: currCategoryId,
+        sortBy,
+        orderBy,
+      })
+    );
+  };
 
   return (
     <>
@@ -33,17 +55,25 @@ function ProductPage() {
       >
         <ProductTitle />
         <Box>
-          <Stack spacing={1} direction={{ xs: 'column', md: 'row' }}>
-            <ProductSearchInput />
+          <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
+            <ProductSearchInput
+              {...{ searchName, handleSearchNameChange, handleOnReload }}
+            />
             <Box sx={{ flexGrow: 1 }} display={{ xs: 'none', md: 'inherit' }} />
-            <Stack direction="row" spacing={1} justifyContent="center">
-              <ProductDownloadButton />
-              <ProductAddNewButton {...{ setCurrCategoryTab }} />
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+              <Stack direction="row" spacing={1} justifyContent="center">
+                <ProductDownloadButton />
+                <ProductAddNewButton {...{ handleOnReload }} />
+              </Stack>
+              <Stack direction="row" spacing={1} justifyContent="center">
+                <SelectSortBy {...{ sortBy, handleSortByChange }} />
+                <SelectOrderBy {...{ orderBy, handleOrderByChange }} />
+              </Stack>
             </Stack>
           </Stack>
         </Box>
         <ProductCategoryTab
-          {...{ currCategoryTab, handleCurrCategoryTabChange }}
+          {...{ currCategoryId, handleCurrCategoryIdChange, handleOnReload }}
         />
       </Stack>
     </>

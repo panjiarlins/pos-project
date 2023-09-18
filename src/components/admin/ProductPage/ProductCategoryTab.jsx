@@ -3,43 +3,44 @@ import { Box, Tab } from '@mui/material';
 import { useSelector } from 'react-redux';
 import ProductList from './ProductList';
 
-function ProductCategoryTab({ currCategoryTab, handleCurrCategoryTabChange }) {
+function ProductCategoryTab({
+  currCategoryId,
+  handleCurrCategoryIdChange,
+  handleOnReload,
+}) {
   const categories = useSelector((states) => states.categories);
 
   return (
     <Box>
-      <TabContext value={currCategoryTab}>
+      <TabContext value={currCategoryId}>
         <TabList
           aria-label="Product Tabs"
           variant="scrollable"
           scrollButtons="auto"
           TabIndicatorProps={{ sx: { bgcolor: 'error.main' } }}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
-          onChange={handleCurrCategoryTabChange}
+          onChange={handleCurrCategoryIdChange}
         >
           <Tab
             label="All"
             value="0"
             sx={{ '&.Mui-selected': { color: 'error.main' } }}
           />
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <Tab
               key={category.id}
               label={category.name}
-              value={`${index + 1}`}
+              value={`${category.id}`}
               sx={{ '&.Mui-selected': { color: 'error.main' } }}
             />
           ))}
         </TabList>
         <TabPanel value="0">
-          <ProductList />
+          <ProductList {...{ handleOnReload }} />
         </TabPanel>
-        {categories.map((category, index) => (
-          <TabPanel key={category.id} value={`${index + 1}`}>
-            <ProductList
-              currCategoryId={category.id}
-              currCategoryTab={currCategoryTab}
-            />
+        {categories.map((category) => (
+          <TabPanel key={category.id} value={`${category.id}`}>
+            <ProductList {...{ handleOnReload }} />
           </TabPanel>
         ))}
       </TabContext>
