@@ -4,6 +4,9 @@ import authUserReducer from './authUser/reducer';
 import categoriesReducer from './categories/reducer';
 import productsReducer from './products/reducer';
 import usersReducer from './users/reducer';
+import transactionReducer from './transaction/reducer';
+import voucherReducers from './voucher/reducers';
+import variantReducers from './variant/reducers';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +15,9 @@ const store = configureStore({
     categories: categoriesReducer,
     products: productsReducer,
     users: usersReducer,
+    transaction: transactionReducer,
+    voucher: voucherReducers,
+    variants: variantReducers,
   },
 });
 

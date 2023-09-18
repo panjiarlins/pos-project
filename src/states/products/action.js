@@ -2,6 +2,7 @@ import { api } from '../../api';
 
 const ActionType = {
   RECEIVE_PRODUCTS: 'RECEIVE_PRODUCTS',
+  GETALL_PRODUCTS: 'GETALL_PRODUCTS',
 };
 
 function receiveProductsActionCreator(products) {
@@ -10,8 +11,26 @@ function receiveProductsActionCreator(products) {
     payload: { products },
   };
 }
+// function getallProducts(product) {
+//   return {
+//     type: ActionType.GETALL_PRODUCTS,
+//     payload: { product },
+//   };
+// }
+
+function asyncGetAllProducts() {
+  return async (dispatch) => {
+    try {
+      const { data } = await api.get(`/products`);
+      await dispatch(receiveProductsActionCreator(data.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
 
 function asyncReceiveProducts({ categoryId, sortBy, orderBy } = {}) {
+  // function asyncReceiveProducts() {
   return async (dispatch) => {
     try {
       const categoryIdQuery =
@@ -22,6 +41,8 @@ function asyncReceiveProducts({ categoryId, sortBy, orderBy } = {}) {
       const allQuery = `${categoryIdQuery}&${sortByQuery}&${orderByQuery}`;
 
       const { data } = await api.get(`/products?${allQuery}`);
+      // const { data } = await api.get(`/products`);
+      console.log('data asyncReceiveProducts :>> ', data);
       dispatch(receiveProductsActionCreator(data.data));
     } catch (error) {
       console.log(error);
@@ -44,4 +65,5 @@ export {
   receiveProductsActionCreator,
   asyncReceiveProducts,
   asyncCreateProduct,
+  asyncGetAllProducts,
 };
