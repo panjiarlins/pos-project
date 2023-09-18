@@ -41,7 +41,6 @@ function asyncGetAllUser() {
     }
   };
 }
-console.log(asyncGetAllUser);
 
 function asyncEditUser(id, updatedUserData) {
   return async (dispatch) => {
