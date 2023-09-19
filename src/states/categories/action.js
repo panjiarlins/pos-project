@@ -11,13 +11,19 @@ function receiveCategoriesActionCreator(categories) {
   };
 }
 
-function asyncReceiveCategories({ name } = {}) {
+function asyncReceiveCategories({ name, page, perPage } = {}) {
   return async (dispatch) => {
-    const nameQuery = name ? `name=${name}` : '';
-    const allQuery = `${nameQuery}`;
+    const nameQuery = name ? `name=${encodeURIComponent(name)}` : '';
+    const pageQuery = page ? `page=${encodeURIComponent(page)}` : '';
+    const perPageQuery = perPage
+      ? `perPage=${encodeURIComponent(perPage)}`
+      : '';
+    const allQuery = `${nameQuery}&${pageQuery}&${perPageQuery}`;
 
     const { data } = await api.get(`/categories?${allQuery}`);
     dispatch(receiveCategoriesActionCreator(data.data));
+
+    return data.info;
   };
 }
 

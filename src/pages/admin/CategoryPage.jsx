@@ -1,35 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Stack } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
 import { asyncReceiveCategories } from '../../states/categories/action';
-import { asyncReceiveProducts } from '../../states/products/action';
 import PageHeader from '../../components/admin/CategoryPage/PageHeader';
 import SearchInput from '../../components/admin/CategoryPage/SearchInput';
 import DownloadButton from '../../components/admin/CategoryPage/DownloadButton';
 import CreateButton from '../../components/admin/CategoryPage/CreateButton';
 import ContainerTable from '../../components/admin/CategoryPage/ContainerTable';
+import useCustomSearchParams from '../../hooks/useCustomSearchParams';
 
 function CategoryPage() {
   const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
+  const [paginationInfo, setPaginationInfo] = useState({});
 
   useEffect(() => {
     dispatch(
       asyncReceiveCategories({
         name: searchParams.get('name'),
+        page: searchParams.get('page'),
+        perPage: searchParams.get('perPage'),
       })
-    ).catch((error) => console.log(error));
-    dispatch(asyncReceiveProducts());
-  }, [dispatch]);
+    )
+      .then(setPaginationInfo)
+      .catch((error) => console.log(error));
+  }, [dispatch, searchParams.get('page')]);
 
   const handleOnReload = () => {
     dispatch(
       asyncReceiveCategories({
         name: searchParams.get('name'),
+        page: searchParams.get('page'),
+        perPage: searchParams.get('perPage'),
       })
-    ).catch((error) => console.log(error));
-    dispatch(asyncReceiveProducts());
+    )
+      .then(setPaginationInfo)
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -43,7 +49,9 @@ function CategoryPage() {
       <PageHeader />
       <Box>
         <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
-          <SearchInput {...{ searchParams, setSearchParams, handleOnReload }} />
+          <SearchInput
+            {...{ searchParams, updateQueryParams, handleOnReload }}
+          />
           <Box sx={{ flexGrow: 1 }} display={{ xs: 'none', md: 'inherit' }} />
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <Stack direction="row" spacing={1} justifyContent="center">
@@ -57,7 +65,9 @@ function CategoryPage() {
           </Stack>
         </Stack>
       </Box>
-      <ContainerTable {...{ handleOnReload }} />
+      <ContainerTable
+        {...{ searchParams, updateQueryParams, handleOnReload, paginationInfo }}
+      />
     </Stack>
   );
 }
