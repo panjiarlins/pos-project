@@ -37,6 +37,7 @@ function ProductCategoryCheckBox({
             </ListItemButton>
           </ListItem>
         ))}
+        {categories.length === 0 && <ListItem>no category found</ListItem>}
       </List>
     </Stack>
   );

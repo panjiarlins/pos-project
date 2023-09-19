@@ -1,5 +1,6 @@
 import { DeleteRounded, EditNoteRounded } from '@mui/icons-material';
 import {
+  Avatar,
   IconButton,
   Stack,
   Switch,
@@ -9,77 +10,119 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import {
+  asyncDeleteProduct,
+  asyncEditProduct,
+} from '../../../states/products/action';
+import ModalEdit from './EditProduct/ModalEdit';
 
-function ProductItem() {
+function ProductItem({ handleOnReload }) {
+  const dispatch = useDispatch();
   const products = useSelector((states) => states.products);
+  const [productData, setProductData] = useState({});
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
 
-  if (!products.length) {
-    return (
-      <TableBody>
-        <TableRow>
-          <TableCell colSpan={6}>
-            <Typography variant="body2" align="center">
-              No data available.
-            </Typography>
-          </TableCell>
-        </TableRow>
-      </TableBody>
+  const handleToggleStatus = (event, newValue) => {
+    const formData = new FormData();
+    formData.append('isActive', newValue);
+    dispatch(asyncEditProduct(event.target.value, formData)).then(
+      handleOnReload
     );
-  }
+  };
 
-  // const handleProductStatus = (event, newValue) => {
-  //   event.target.value
-  //   newValue:true/false
-  //   dispatch()
-  // };
+  const handleOnEditButton = (product) => {
+    setProductData(product);
+    setIsModalEditOpen(true);
+  };
 
-  return products.map((product) => (
-    <TableBody key={product.id}>
-      <TableRow>
-        <TableCell>{product.id}</TableCell>
-        <TableCell />
-        <TableCell>{product.name}</TableCell>
-        <TableCell>{product.description}</TableCell>
-        <TableCell align="center">
-          <Tooltip
-            title={`Product status: ${
-              product.isActive ? 'Active' : 'Inactive'
-            }`}
-            arrow
-          >
-            <Switch
-              checked={product.isActive}
-              value={product.id}
-              // onChange={handleProductStatus}
-              sx={{
-                '& .MuiSwitch-switchBase.Mui-checked': {
-                  color: 'success.light',
-                },
-                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                  backgroundColor: 'success.light',
-                },
-              }}
-            />
-          </Tooltip>
-        </TableCell>
-        <TableCell>
-          <Stack direction="row">
-            <Tooltip title="Edit product" arrow>
-              <IconButton sx={{ '&:hover': { color: 'info.main' } }}>
-                <EditNoteRounded />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete product" arrow>
-              <IconButton sx={{ '&:hover': { color: 'error.main' } }}>
-                <DeleteRounded />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-        </TableCell>
-      </TableRow>
-    </TableBody>
-  ));
+  const handleOnDelete = (productId) => {
+    dispatch(asyncDeleteProduct(productId)).then(handleOnReload);
+  };
+
+  return (
+    <>
+      <TableBody>
+        {!products.length && (
+          <TableRow>
+            <TableCell colSpan={6}>
+              <Typography variant="body2" align="center">
+                no data available
+              </Typography>
+            </TableCell>
+          </TableRow>
+        )}
+        {products.map((product) => (
+          <TableRow key={product.id}>
+            <TableCell>{product.id}</TableCell>
+            <TableCell>
+              <Avatar
+                variant="square"
+                alt={product.name}
+                src={`${import.meta.env.VITE_API_URL}/products/image/${
+                  product.id
+                }`}
+              />
+            </TableCell>
+            <TableCell>{product.name}</TableCell>
+            <TableCell>{product.description}</TableCell>
+            <TableCell align="center">
+              <Tooltip
+                title={`Product status: ${
+                  product.isActive ? 'Active' : 'Inactive'
+                }`}
+                arrow
+              >
+                <Switch
+                  checked={product.isActive}
+                  value={product.id}
+                  onChange={handleToggleStatus}
+                  sx={{
+                    '& .MuiSwitch-switchBase.Mui-checked': {
+                      color: 'success.light',
+                    },
+                    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                      backgroundColor: 'success.light',
+                    },
+                  }}
+                />
+              </Tooltip>
+            </TableCell>
+            <TableCell>
+              <Stack direction="row">
+                <Tooltip title="Edit product" arrow>
+                  <IconButton
+                    onClick={() => handleOnEditButton(product)}
+                    sx={{ '&:hover': { color: 'info.main' } }}
+                  >
+                    <EditNoteRounded />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete product" arrow>
+                  <IconButton
+                    value="productId"
+                    onClick={() => handleOnDelete(product.id)}
+                    sx={{ '&:hover': { color: 'error.main' } }}
+                  >
+                    <DeleteRounded />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+      <ModalEdit
+        {...{
+          productData,
+          isModalEditOpen,
+          setIsModalEditOpen,
+          handleOnReload,
+        }}
+      />
+    </>
+  );
 }
 
 export default ProductItem;

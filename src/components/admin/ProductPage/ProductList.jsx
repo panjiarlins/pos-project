@@ -6,18 +6,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import ProductItem from './ProductItem';
-import { asyncReceiveProducts } from '../../../states/products/action';
 
-function ProductList({ currCategoryTab }) {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(asyncReceiveProducts({ categoryId: currCategoryTab }));
-  }, [dispatch]);
-
+function ProductList({ handleOnReload }) {
   return (
     <TableContainer
       component={Paper}
@@ -30,19 +21,20 @@ function ProductList({ currCategoryTab }) {
         <TableHead>
           <TableRow
             sx={{
-              bgcolor: 'error.light',
-              '& > *': { color: '#fff' },
+              bgcolor: 'error.main',
             }}
           >
-            <TableCell>ID</TableCell>
-            <TableCell>Image</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell align="center">Status</TableCell>
+            <TableCell sx={{ color: 'white' }}>ID</TableCell>
+            <TableCell sx={{ color: 'white' }}>Image</TableCell>
+            <TableCell sx={{ color: 'white' }}>Name</TableCell>
+            <TableCell sx={{ color: 'white' }}>Description</TableCell>
+            <TableCell sx={{ color: 'white' }} align="center">
+              Status
+            </TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
-        <ProductItem {...{ currCategoryTab }} />
+        <ProductItem {...{ handleOnReload }} />
       </Table>
     </TableContainer>
   );

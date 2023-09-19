@@ -1,22 +1,24 @@
 import { SearchRounded } from '@mui/icons-material';
 import { IconButton, TextField, Tooltip } from '@mui/material';
 
-function ProductSearchInput() {
+function ProductSearchInput({
+  searchName,
+  handleSearchNameChange,
+  handleOnReload,
+}) {
   return (
     <TextField
       color="info"
       size="small"
       label="Search Products"
       variant="outlined"
-      // value={searchTerm}
-      // onChange={(e) => setSearchTerm(e.target.value)}
+      value={searchName}
+      onChange={handleSearchNameChange}
       sx={{ width: { md: '50%' } }}
       InputProps={{
         endAdornment: (
           <Tooltip title="Search products" arrow>
-            <IconButton
-            // onClick={handleSearch}
-            >
+            <IconButton onClick={handleOnReload}>
               <SearchRounded />
             </IconButton>
           </Tooltip>
