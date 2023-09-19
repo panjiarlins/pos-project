@@ -16,7 +16,7 @@ function asyncTransaction(transactionData) {
   return async (dispatch) => {
     try {
       console.log('Sending transaction data:', transactionData);
-      const response = await api.post('/transaction', transactionData);
+      const response = await api.post('/transactions', transactionData);
       console.log('Transaction successful. Response:', response.data.data);
 
       dispatch(setTransactionData(response.data.data));

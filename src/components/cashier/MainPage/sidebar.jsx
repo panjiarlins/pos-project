@@ -1,46 +1,57 @@
-// import React from 'react';
-// import { Box, VStack, Text, Divider } from '@chakra-ui/react';
-// import { useSelector } from 'react-redux';
+/* eslint-disable react/button-has-type */
+/* eslint-disable react/no-array-index-key */
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { asyncTransaction } from '../../../states/transaction/action';
 
-// function OrderDetailSidebar() {
-//   const products = useSelector((state) => state.products);
-//   const calculateTotal = () =>
-//     products.reduce((total, item) => total + item.totalPrice, 0);
+function Sidebar({ orderDetails }) {
+  console.log(orderDetails, 'orderDetails in sidebar');
+  const [updatedOrderDetails, setUpdatedOrderDetails] = useState([]);
+  // const [selectedVoucher] = useState(undefined);
+  // const [selectedVariants] = useState({});
+  const authUser = useSelector((state) => state.authUser);
+  const dispatch = useDispatch();
+  console.log(updatedOrderDetails, ' updatedOrderDetails in sidebar');
 
-//   return (
-//     <Box
-//       w="300px"
-//       h="100vh"
-//       p="4"
-//       borderRight="1px solid #ccc"
-//       boxShadow="0px 0px 10px rgba(0, 0, 0, 0.1)"
-//       position="absolute"
-//       top="0"
-//       right="0"
-//     >
-//       <VStack spacing="4">
-//         <Text fontSize="xl" fontWeight="bold">
-//           Order Summary
-//         </Text>
-//         {products.map((item, index) => (
-//           // eslint-disable-next-line react/no-array-index-key
-//           <Box key={index} w="100%">
-//             <Text fontSize="md">
-//               {item.productName} - {item.variant}
-//               <Text ml="auto">
-//                 {item.quantity} x ${item.unitPrice}
-//               </Text>
-//             </Text>
-//             <Divider />
-//           </Box>
-//         ))}
-//         <Text fontSize="md" fontWeight="bold">
-//           Subtotal
-//           <Text ml="auto">${calculateTotal()}</Text>
-//         </Text>
-//       </VStack>
-//     </Box>
-//   );
-// }
+  useEffect(() => {
+    setUpdatedOrderDetails(orderDetails);
+  }, [orderDetails]);
 
-// export default OrderDetailSidebar;
+  // const handleCharge = async () => {
+  //   try {
+  //     const variantQuantities = Object.entries(selectedVariants).map(
+  //       ([variantId, { quantity }]) => ({
+  //         variantId,
+  //         quantity,
+  //       })
+  //     );
+  //     const userId = authUser.id;
+  //     const voucherCode = selectedVoucher?.code || undefined;
+  //     await dispatch(
+  //       asyncTransaction({
+  //         userId,
+  //         voucherCode,
+  //         variants: variantQuantities,
+  //       })
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+
+  //   setUpdatedOrderDetails([]);
+  // };
+
+  return (
+    <div style={{ border: '1px solid black', padding: '16px' }}>
+      <h2>Order Details</h2>
+      <ul>
+        {updatedOrderDetails.map((product, index) => (
+          <li key={index}>{product.name}</li>
+        ))}
+      </ul>
+      <button onClick={handleCharge}>Charge</button>
+    </div>
+  );
+}
+
+export default Sidebar;

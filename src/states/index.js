@@ -7,6 +7,7 @@ import usersReducer from './users/reducer';
 import transactionReducer from './transaction/reducer';
 import voucherReducers from './voucher/reducers';
 import variantReducers from './variant/reducers';
+import cartReducer from './addTocart/reducers';
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     transaction: transactionReducer,
     voucher: voucherReducers,
     variants: variantReducers,
+    addtocart: cartReducer,
   },
 });
 

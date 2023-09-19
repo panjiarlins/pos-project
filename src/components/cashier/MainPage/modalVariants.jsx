@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-use-before-define */
 import React, { useEffect, useState } from 'react';
 import {
   Modal,
@@ -12,87 +14,90 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Box,
-  ButtonGroup,
+  // Box,
   ModalHeader,
-  // Checkbox,
 } from '@chakra-ui/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+// import { asyncTransaction } from '../../../states/transaction/action';
+import { asyncReceiveProducts } from '../../../states/products/action';
 
-import { asyncgetAllVoucher } from '../../../states/voucher/action';
-import { asyncgetAllVariant } from '../../../states/variant/action';
-import { asyncTransaction } from '../../../states/transaction/action';
+function CustomModal({ isOpen, onClose, product, orderDetails }) {
+  // const [selectedVoucher, setSelectedVoucher] = useState(undefined);
+  // const [selectedVariants, setSelectedVariants] = useState({});
 
-function CustomModal({ isOpen, onClose, product }) {
-  const [quantity, setQuantity] = useState(1);
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
-  const [selectedVariants, setSelectedVariants] = useState([]); // Array to store selected variants
-  const dispatch = useDispatch();
-  const vouchers = useSelector((state) => state.voucher);
-  // const variants = useSelector((state) => state.variants);
-  // const products = useSelector((state) => state.products);
+  // const dispatch = useDispatch();
+  // // const authUser = useSelector((state) => state.authUser);
 
-  // console.log('variants :> ', variants);
+  // useEffect(() => {
+  //   const fetchVouchersAndVariants = async () => {
+  //     try {
+  //       await dispatch(asyncReceiveProducts());
+  //       console.log('Async fetch');
+  //     } catch (error) {
+  //       console.error('Error fetching vouchers and variants:', error);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const fetchVouchersAndVariants = async () => {
-      try {
-        await dispatch(asyncgetAllVoucher());
-        await dispatch(asyncgetAllVariant());
+  //   fetchVouchersAndVariants();
+  // }, [dispatch]);
 
-        console.log('Async fetch vouchers and variants');
-      } catch (error) {
-        console.error('Error fetching vouchers and variants:', error);
-      }
-    };
-
-    fetchVouchersAndVariants();
-  }, [dispatch]);
+  // eslint-disable-next-line no-shadow
 
   const handleTransaction = async () => {
     try {
-      await dispatch(
-        asyncTransaction({
-          product,
+      const variantQuantities = Object.entries(selectedVariants).map(
+        ([variantId, { quantity }]) => ({
+          variantId,
           quantity,
-          variant: selectedVariants,
-          // addOn,
-          voucher: selectedVoucher,
         })
       );
+
+      // const productWithVariants = {
+      //   ...product,
+      //   variants: variantQuantities,
+      // };
+
+      orderDetails(variantQuantities);
+      // console.log(product, 'product in modal');
+      handleModalClose();
     } catch (error) {
       console.log(error);
     }
   };
-
-  const handleIncrement = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
   const handleVoucherToggle = (voucher) => {
-    setSelectedVoucher(voucher);
+    setSelectedVoucher((prevSelectedVoucher) =>
+      prevSelectedVoucher === voucher ? undefined : voucher
+    );
   };
 
-  const handleButtonClick = (variantName) => {
-    if (selectedVariants.includes(variantName)) {
-      setSelectedVariants(
-        selectedVariants.filter((variant) => variant !== variantName)
-      );
-    } else {
-      setSelectedVariants([...selectedVariants, variantName]);
-    }
+  const handleButtonClick = (variantId, quantityType) => {
+    setSelectedVariants((prevSelectedVariants) => {
+      const updatedVariants = { ...prevSelectedVariants };
+
+      if (!updatedVariants[variantId]) {
+        updatedVariants[variantId] = {};
+      }
+
+      if (!updatedVariants[variantId][quantityType]) {
+        updatedVariants[variantId][quantityType] = 1;
+      } else {
+        updatedVariants[variantId][quantityType] += 0.5;
+      }
+
+      return updatedVariants;
+    });
+  };
+
+  const handleModalClose = () => {
+    setSelectedVoucher(undefined);
+    setSelectedVariants({});
+    onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={handleModalClose} isCentered>
       <ModalOverlay />
-      <ModalContent maxW="40%">
+      <ModalContent maxW="30%">
         <ModalHeader>{product?.name}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -103,56 +108,60 @@ function CustomModal({ isOpen, onClose, product }) {
           />
           <Stack mt="4" spacing="2">
             <Text>{product?.description}</Text>
-            <Text color="blue.600" fontSize="lg">
-              Rp{product?.price || 0}
-            </Text>
           </Stack>
           <FormControl mt="4">
             <FormLabel>Variant | Choose Many</FormLabel>
-            <Stack direction="row" spacing={2}>
-              {console.log(product)}
-              {product.Variants?.map((variantOption) => (
-                <Button
-                  key={variantOption.id}
-                  size="sm"
-                  colorScheme={
-                    selectedVariants.includes(variantOption.name)
-                      ? 'red'
-                      : 'gray'
-                  }
-                  onClick={() => handleButtonClick(variantOption.name)}
-                >
-                  {variantOption.name}
-                </Button>
-              ))}
+            <Stack direction="row" spacing={5}>
+              {product &&
+                product.Variants?.map((variantOption) => (
+                  <Button
+                    key={variantOption.id}
+                    size="sm"
+                    colorScheme={
+                      selectedVariants[variantOption.id] ? 'red' : 'gray'
+                    }
+                    onClick={() =>
+                      handleButtonClick(variantOption.id, 'quantity')
+                    }
+                    width="250px"
+                  >
+                    {variantOption.name} (
+                    {selectedVariants[variantOption.id]?.quantity || 0})
+                  </Button>
+                ))}
             </Stack>
           </FormControl>
-
           <FormControl mt="4">
-            <FormLabel>Quantity</FormLabel>
-            <ButtonGroup size="sm">
-              <Button onClick={handleDecrement}>-</Button>
-              <Button>{quantity}</Button>
-              <Button onClick={handleIncrement}>+</Button>
-            </ButtonGroup>
+            <FormLabel>Voucher</FormLabel>
+            <Stack direction="row" spacing={2}>
+              {product &&
+                product.Vouchers.map((voucher) => (
+                  <Button
+                    key={voucher.id}
+                    onClick={() => handleVoucherToggle(voucher)}
+                    colorScheme={selectedVoucher === voucher ? 'red' : 'gray'}
+                    width="280px"
+                    height="30px"
+                    mr={2}
+                    mb={2}
+                  >
+                    {voucher.name}
+                  </Button>
+                ))}
+            </Stack>
           </FormControl>
-          <Box p="4" bg="white" borderRadius="md" textAlign="center" mt="4">
-            <Text>Voucher Discounts:</Text>
-            {vouchers.map((voucher) => (
-              <Button
-                key={voucher.id}
-                onClick={() => handleVoucherToggle(voucher)}
-                colorScheme={selectedVoucher === voucher ? 'red' : 'gray'}
-                size="sm"
-                mr={2}
-              >
-                {voucher.name}
-              </Button>
-            ))}
-          </Box>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter display="flex" justifyContent="space-between">
+          <Button
+            size="sm"
+            border="1px solid black"
+            // colorScheme="red"
+            onClick={handleModalClose}
+            color="black"
+          >
+            Close
+          </Button>
           <Button
             size="sm"
             variant="solid"
@@ -161,15 +170,6 @@ function CustomModal({ isOpen, onClose, product }) {
             onClick={handleTransaction}
           >
             Save
-          </Button>
-          <Button
-            size="sm"
-            variant="solid"
-            colorScheme="red"
-            onClick={onClose}
-            color="white"
-          >
-            Close
           </Button>
         </ModalFooter>
       </ModalContent>

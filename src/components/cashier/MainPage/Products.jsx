@@ -2,87 +2,83 @@ import {
   Grid,
   Card,
   CardBody,
-  CardFooter,
   Divider,
   Stack,
   Image,
   Heading,
   Text,
-  // eslint-disable-next-line no-unused-vars
-  ButtonGroup,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  // asyncGetAllProducts,
-  asyncReceiveProducts,
-} from '../../../states/products/action';
+import { asyncReceiveProducts } from '../../../states/products/action';
 import CustomModal from './modalVariants';
+import ProductItem from './ProductItem';
 
 export function ProductsCard() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isSmallScreen] = useMediaQuery('(max-width: 768px)');
+  const [orderDetails, setOrderDetails] = useState([]);
+
+  const addToOrderDetails = (product) => {
+    const existingProductIndex = orderDetails.findIndex(
+      (p) => p.id === product.id
+    );
+
+    if (existingProductIndex !== -1) {
+      const updatedOrderDetails = [...orderDetails];
+
+      updatedOrderDetails[existingProductIndex].quantity += 1;
+
+      setOrderDetails(updatedOrderDetails);
+      console.log(
+        updatedOrderDetails,
+        'updatedOrderDetails in component products123'
+      );
+    } else {
+      const updatedOrderDetails = [
+        ...orderDetails,
+        { ...product, quantity: 1 },
+      ];
+
+      setOrderDetails(updatedOrderDetails);
+    }
+    console.log(product, ' data products in component product');
+  };
 
   const handleCardClick = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
+    addToOrderDetails(product);
   };
 
   useEffect(() => {
-    // const fetchProducts = () => {
-    //   try {
-    //     dispatch(asyncReceiveProducts());
-    //     console.log('asyncReceiveProducts fired');
-    //   } catch (error) {
-    //     console.error('Error fetching products:', error);
-    //   }
-    // };
-
-    // fetchProducts();
-
     dispatch(asyncReceiveProducts());
   }, [dispatch]);
 
+  const getGridTemplateColumns = () => {
+    if (isSmallScreen) {
+      return 'repeat(1, 1fr)';
+    }
+    return 'repeat(3, 1fr)';
+  };
+
   return (
-    <Grid templateColumns="repeat(4, 1fr)" gap="4" maxWidth="1200px">
-      {console.log('1', products)}
-      {products.map((product, index) => (
-        <Card
-          // eslint-disable-next-line react/no-array-index-key
-          key={index}
-          maxW="300px"
-          borderWidth="1px"
-          borderRadius="lg"
-          m="2"
-          cursor="pointer"
-          onClick={() => handleCardClick(product)}
-        >
-          <CardBody p="2">
-            <Image
-              src={
-                // product?.image ||
-                'https://placehold.co/600x400'
-              }
-              alt={product?.name || ''}
-              borderRadius="lg"
-            />
-            <Stack mt="4" spacing="2">
-              <Heading size="sm">{product?.name}</Heading>
-              <Text fontSize="sm">{product?.description}</Text>
-            </Stack>
-          </CardBody>
-          <Divider />
-          <CardFooter />
-        </Card>
-      ))}
+    <>
+      <Grid templateColumns={getGridTemplateColumns()} maxWidth="1200x">
+        {products.map((product) => (
+          <ProductItem key={product.id} />
+        ))}
+      </Grid>
       <CustomModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={selectedProduct}
+        orderDetails={addToOrderDetails}
       />
-    </Grid>
+    </>
   );
 }
