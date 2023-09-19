@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 import { asyncPreloadProcess } from './states/isPreload/action';
 import LoginPageAdmin from './pages/admin/LoginPageAdmin';
@@ -18,6 +18,8 @@ function App() {
   const authUser = useSelector((states) => states.authUser);
   const isPreload = useSelector((states) => states.isPreload);
   const dispatch = useDispatch();
+  const location = useLocation();
+  const pathLocation = location.pathname.split('/')[1];
 
   useEffect(() => {
     dispatch(asyncPreloadProcess());
@@ -53,43 +55,50 @@ function App() {
     );
   }
 
-  return (
-    <Routes>
-      <Route path="/logout" element={<LogoutUser />} />
-      {authUser.isAdmin && (
+  if (pathLocation === 'admin') {
+    return (
+      authUser.isAdmin && (
         <>
-          <Route path="/admin/products" element={<ProductPage />} />
-          <Route
-            path="/admin/administrator"
-            element={
-              <>
-                <NavbarAdmin />
+          <NavbarAdmin />
+          <Routes>
+            <Route path="/admin/products" element={<ProductPage />} />
+            <Route
+              path="/admin/administrator"
+              element={
                 <ChakraProvider>
                   <AdminPage />
                 </ChakraProvider>
-              </>
-            }
-          />
-          <Route path="/admin/categories" element={<CategoryPage />} />
-          <Route path="/admin/report" element={<ReportPageAdmin />} />
-          <Route path="/admin/*" element={<Navigate to="/admin/products" />} />
+              }
+            />
+            <Route path="/admin/categories" element={<CategoryPage />} />
+            <Route path="/admin/report" element={<ReportPageAdmin />} />
+            <Route
+              path="/admin/*"
+              element={<Navigate to="/admin/products" />}
+            />
+            <Route path="/logout" element={<LogoutUser />} />
+          </Routes>
         </>
-      )}
-      {authUser.isCashier && (
-        <>
-          <Route
-            path="/cashier/main"
-            element={
-              <ChakraProvider>
-                <MainPage />
-              </ChakraProvider>
-            }
-          />
-          <Route path="/cashier/report" element={<ReportPageCashier />} />
-          <Route path="/cashier/*" element={<Navigate to="/cashier/main" />} />
-        </>
-      )}
-    </Routes>
+      )
+    );
+  }
+
+  return (
+    authUser.isCashier && (
+      <Routes>
+        <Route
+          path="/cashier/main"
+          element={
+            <ChakraProvider>
+              <MainPage />
+            </ChakraProvider>
+          }
+        />
+        <Route path="/cashier/report" element={<ReportPageCashier />} />
+        <Route path="/cashier/*" element={<Navigate to="/cashier/main" />} />
+        <Route path="/logout" element={<LogoutUser />} />
+      </Routes>
+    )
   );
 }
 
