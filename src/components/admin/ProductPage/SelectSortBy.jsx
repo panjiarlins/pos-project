@@ -1,13 +1,13 @@
 import { Box, MenuItem, TextField } from '@mui/material';
 
-function SelectSortBy({ sortBy, handleSortByChange }) {
+function SelectSortBy({ searchParams, updateQueryParams }) {
   return (
     <Box>
       <TextField
         label="Sort by"
         size="small"
-        value={sortBy}
-        onChange={handleSortByChange}
+        value={searchParams.get('sortBy') || 'updatedAt'}
+        onChange={({ target }) => updateQueryParams({ sortBy: target.value })}
         select
         fullWidth
       >

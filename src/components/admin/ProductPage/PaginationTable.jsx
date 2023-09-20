@@ -1,5 +1,4 @@
 import { Pagination } from '@mui/material';
-import React from 'react';
 
 function PaginationTable({ searchParams, updateQueryParams, paginationInfo }) {
   return (

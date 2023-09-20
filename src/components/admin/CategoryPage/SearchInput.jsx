@@ -9,16 +9,14 @@ function SearchInput({ searchParams, updateQueryParams, handleOnReload }) {
     }, 300); // Adjust the delay as needed
 
     // Clear the previous timer on each input change
-    return () => {
-      clearTimeout(timerId);
-    };
+    return () => clearTimeout(timerId);
   }, [searchParams.get('name')]);
 
   return (
     <TextField
       color="info"
       size="small"
-      label="Search Products 🔍"
+      label="Search Categories 🔍"
       variant="outlined"
       value={searchParams.get('name') || ''}
       onChange={({ target }) => updateQueryParams({ name: target.value })}

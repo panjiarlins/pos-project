@@ -1,14 +1,14 @@
 import React from 'react';
 import { Box, MenuItem, TextField } from '@mui/material';
 
-function SelectOrderBy({ orderBy, handleOrderByChange }) {
+function SelectOrderBy({ searchParams, updateQueryParams }) {
   return (
     <Box>
       <TextField
         label="Order by"
         size="small"
-        value={orderBy}
-        onChange={handleOrderByChange}
+        value={searchParams.get('orderBy') || 'DESC'}
+        onChange={({ target }) => updateQueryParams({ orderBy: target.value })}
         select
         fullWidth
       >

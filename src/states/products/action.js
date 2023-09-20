@@ -23,21 +23,34 @@ function asyncGetAllProducts() {
   };
 }
 
-function asyncReceiveProducts({ name, categoryId, sortBy, orderBy } = {}) {
+function asyncReceiveProducts({
+  name,
+  categoryId,
+  sortBy,
+  orderBy,
+  page,
+  perPage,
+} = {}) {
   return async (dispatch) => {
-    try {
-      const nameQuery = name ? `name=${name}` : '';
-      const categoryIdQuery =
-        categoryId && categoryId !== '0' ? `categoryId=${categoryId}` : '';
-      const sortByQuery = sortBy ? `sortBy=${sortBy}` : '';
-      const orderByQuery = orderBy ? `orderBy=${orderBy}` : '';
-      const allQuery = `${nameQuery}&${categoryIdQuery}&${sortByQuery}&${orderByQuery}`;
+    const nameQuery = name ? `name=${encodeURIComponent(name)}` : '';
+    const categoryIdQuery =
+      categoryId && categoryId !== '0'
+        ? `categoryId=${encodeURIComponent(categoryId)}`
+        : '';
+    const sortByQuery = sortBy ? `sortBy=${encodeURIComponent(sortBy)}` : '';
+    const orderByQuery = orderBy
+      ? `orderBy=${encodeURIComponent(orderBy)}`
+      : '';
+    const pageQuery = page ? `page=${encodeURIComponent(page)}` : '';
+    const perPageQuery = perPage
+      ? `perPage=${encodeURIComponent(perPage)}`
+      : '';
+    const allQuery = `${nameQuery}&${categoryIdQuery}&${sortByQuery}&${orderByQuery}&${pageQuery}&${perPageQuery}`;
 
-      const { data } = await api.get(`/products?${allQuery}`);
-      dispatch(receiveProductsActionCreator(data.data));
-    } catch (error) {
-      console.log(error);
-    }
+    const { data } = await api.get(`/products?${allQuery}`);
+    dispatch(receiveProductsActionCreator(data.data));
+
+    return data.info;
   };
 }
 
