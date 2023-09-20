@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -25,12 +24,13 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
+  useToast,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { EditIcon, DeleteIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   asyncGetAllUser,
@@ -42,15 +42,18 @@ import RegisterAdminModal from './NewAdmin';
 function TableAdmin() {
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [editedUserData, setEditedUserData] = useState({});
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  // eslint-disable-next-line no-unused-vars
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [selectedRole, setSelectedRole] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const data = useSelector((state) => state.users);
   const [imagePreview, setImagePreview] = useState(null);
+  const toast = useToast();
 
   useEffect(() => {
     dispatch(asyncGetAllUser());
@@ -73,18 +76,23 @@ function TableAdmin() {
   }, [selectedRole, data]);
 
   const handleEditUser = (userId) => {
-    setSelectedUserId(userId);
+    const userToEdit = filteredData.find((user) => user.id === userId);
+    setEditedUserData(userToEdit); // Set the user data to edit
     setIsEditModalOpen(true);
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
     if (file) {
-      setEditedUserData({ ...editedUserData, image: file });
       const imageURL = URL.createObjectURL(file);
-      setImagePreview(imageURL);
+      setImagePreview({
+        blob: file,
+        url: imageURL,
+      });
     }
   };
+
   const handleToggleStatus = async (userId, isActive) => {
     try {
       const updatedUserData = {
@@ -96,6 +104,7 @@ function TableAdmin() {
       console.log(error);
     }
   };
+
   const handleDeleteUser = async (userId) => {
     try {
       await dispatch(asyncDeleteUser(userId));
@@ -110,40 +119,69 @@ function TableAdmin() {
       const formdata = new FormData();
       formdata.append('username', editedUserData.username);
       formdata.append('fullname', editedUserData.fullname);
-
+      formdata.append('password', editedUserData.password);
       formdata.append('email', editedUserData.email);
       formdata.append('image', editedUserData.image);
       await dispatch(asyncEditUser(selectedUserId, editedUserData));
       setIsEditModalOpen(false);
       dispatch(asyncGetAllUser());
+      toast({
+        title: 'User Edited',
+        description: 'User information has been successfully updated.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'top',
+      });
     } catch (error) {
       console.log(error);
     }
   };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   return (
-    <Box>
-      <Flex justify="space-between" alignItems="center" mb="4">
+    <Box p="6">
+      <Flex justify="space-between" alignItems="center" mb="2">
         <Text fontSize="2xl" fontWeight="bold">
           Admin
         </Text>
         <Button
-          margin={2}
-          bg="#B42318"
+          bg="red.500"
           color="white"
-          _hover={{ bg: '#B42318' }}
+          // _hover={{ bg: 'red.600' }}
           onClick={() => setIsRegisterModalOpen(true)}
         >
           + Admin
         </Button>
       </Flex>
+
+      <Flex mb="4">
+        <Menu>
+          <MenuButton
+            as={Button}
+            rightIcon={<ChevronDownIcon />}
+            mr="2"
+            variant="outline"
+          >
+            Filter by Role
+          </MenuButton>
+          <MenuList>
+            <MenuItem onClick={() => setSelectedRole('')}>All Roles</MenuItem>
+            <MenuItem onClick={() => setSelectedRole('admin')}>Admin</MenuItem>
+            <MenuItem onClick={() => setSelectedRole('cashier')}>
+              Cashier
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+
       <Table variant="simple">
         <Thead>
           <Tr>
@@ -160,8 +198,14 @@ function TableAdmin() {
             <Tr key={index}>
               <Td>
                 <Flex align="center">
-                  <Avatar size="sm" src={user.image} mr="2" />
-                  <Text>{user.fullname}</Text>
+                  <Avatar
+                    size="sm"
+                    src={imagePreview ? imagePreview.url : editedUserData.image}
+                    mb="1"
+                    cursor="pointer"
+                    _hover={{ opacity: 0.8 }}
+                  />
+                  <Text p={2}>{user.fullname}</Text>
                 </Flex>
               </Td>
               <Td>{user.isAdmin ? 'Admin' : 'Cashier'}</Td>
@@ -200,9 +244,9 @@ function TableAdmin() {
       />
 
       <Flex justify="center" mt="4">
-        {data.length > itemsPerPage && (
+        {filteredData.length > itemsPerPage && (
           <ButtonGroup spacing={2}>
-            {Array(Math.ceil(data.length / itemsPerPage))
+            {Array(Math.ceil(filteredData.length / itemsPerPage))
               .fill()
               .map((_, index) => (
                 <Button
@@ -218,7 +262,6 @@ function TableAdmin() {
         )}
       </Flex>
 
-      {/* Modal untuk edit user */}
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
@@ -229,7 +272,7 @@ function TableAdmin() {
               <label htmlFor="file-input">
                 <Avatar
                   size="xl"
-                  src={imagePreview || editedUserData.image}
+                  src={imagePreview ? imagePreview.url : editedUserData.image}
                   mb="4"
                   cursor="pointer"
                   _hover={{ opacity: 0.8 }}
@@ -247,7 +290,7 @@ function TableAdmin() {
                 <Input
                   type="text"
                   name="fullname"
-                  value={editedUserData.fullname}
+                  value={editedUserData.fullname || ''}
                   onChange={(e) =>
                     setEditedUserData({
                       ...editedUserData,
@@ -259,7 +302,7 @@ function TableAdmin() {
                 <Input
                   type="text"
                   name="username"
-                  value={editedUserData.username}
+                  value={editedUserData.username || ''}
                   onChange={(e) =>
                     setEditedUserData({
                       ...editedUserData,
@@ -271,11 +314,23 @@ function TableAdmin() {
                 <Input
                   type="text"
                   name="email"
-                  value={editedUserData.email}
+                  value={editedUserData.email || ''}
                   onChange={(e) =>
                     setEditedUserData({
                       ...editedUserData,
                       email: e.target.value,
+                    })
+                  }
+                />
+                <FormLabel>Password</FormLabel>
+                <Input
+                  type="password"
+                  name="password"
+                  value={editedUserData.password || ''}
+                  onChange={(e) =>
+                    setEditedUserData({
+                      ...editedUserData,
+                      password: e.target.value,
                     })
                   }
                 />

@@ -69,6 +69,7 @@ function App() {
       {authUser.isCashier &&
         (() => (
           <>
+            {/* <SidebarCashier /> */}
             <Route
               path="/main"
               element={

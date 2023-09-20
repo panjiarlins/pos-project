@@ -29,7 +29,6 @@ function CustomModal({
   setVariants,
 }) {
   const [selectedVariants, setSelectedVariants] = useState();
-
   useEffect(() => {
     setSelectedVariants(product?.Variants.map((variant) => ({ ...variant })));
   }, [product, isOpen]);
@@ -47,17 +46,35 @@ function CustomModal({
     );
   };
 
+  // const arrSelectedVariantsId = selectedVariants.map(({ id, quantity }) => {
+  //   if (quantity && quantity > 0) return id;
+  //   return null;
+  // });
   const handleOnSave = () => {
-    // get all selected variantId
+    // Create an array to store the selected variants with additional information
+    // const arrSelectedVariantsId = selectedVariants
+    //   .map(({ id, name, price, quantity }) => {
+    //     if (quantity && quantity > 0) {
+    //       return {
+    //         id,
+    //         name,
+    //         price,
+    //         quantity,
+    //       };
+    //     }
+    //     return null;
+    //   })
+    //   .filter((variant) => variant !== null);
+
     const arrSelectedVariantsId = selectedVariants.map(({ id, quantity }) => {
       if (quantity && quantity > 0) return id;
       return null;
     });
-
     const newVariants = variants.filter(
       (variant) => !arrSelectedVariantsId.includes(variant.variantId)
     );
-
+    console.log(newVariants);
+    console.log(arrSelectedVariantsId);
     selectedVariants.forEach((variant) => {
       if (arrSelectedVariantsId.includes(variant.id)) {
         newVariants.push({
@@ -75,12 +92,17 @@ function CustomModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent maxW="30%">
+      <ModalContent maxW="40%">
         <ModalHeader>{product?.name}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Image
-            src={product?.image || 'https://placehold.co/600x400'}
+            width="500px"
+            height="300px"
+            objectFit="cover"
+            src={`${import.meta.env.VITE_API_URL}/products/image/${
+              product?.id
+            }`}
             alt={product?.name || ''}
             borderRadius="lg"
           />
@@ -89,7 +111,7 @@ function CustomModal({
           </Stack>
           <FormControl mt="4">
             <FormLabel>Variant | Choose Many</FormLabel>
-            <Stack direction="row" spacing={5}>
+            <Stack direction="row" spacing={3}>
               {selectedVariants &&
                 selectedVariants?.map((variant) => (
                   <Button
@@ -110,7 +132,7 @@ function CustomModal({
           <Button
             size="sm"
             border="1px solid black"
-            colorScheme="red"
+            // colorScheme="red"
             onClick={onClose}
             color="black"
           >

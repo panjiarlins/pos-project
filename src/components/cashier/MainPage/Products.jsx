@@ -20,7 +20,7 @@ export function ProductsCard({ variants, setVariants }) {
     if (isSmallScreen) {
       return 'repeat(1, 1fr)';
     }
-    return 'repeat(3, 1fr)';
+    return 'repeat(4, 1fr)';
   };
 
   return (

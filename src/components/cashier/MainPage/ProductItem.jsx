@@ -24,6 +24,8 @@ function ProductItem({ product, setIsModalOpen, setSelectedProduct }) {
     >
       <CardBody p="2">
         <Image
+          width="200px"
+          height="150px"
           src={`${import.meta.env.VITE_API_URL}/products/image/${product.id}`}
           alt={product.name || ''}
           borderRadius="lg"
