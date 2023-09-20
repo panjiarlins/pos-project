@@ -43,7 +43,16 @@ function ProductModalAddNew({
     formData.append('name', productName);
     formData.append('description', productDescription);
     formData.append('categoryId', JSON.stringify(selectedCategories));
-    formData.append('variants', productVariants);
+    formData.append(
+      'variants',
+      JSON.stringify(
+        productVariants.map(({ name, price, stock }) => ({
+          name,
+          price,
+          stock,
+        }))
+      )
+    );
     dispatch(asyncCreateProduct(formData)).then(() => {
       handleOnReload();
       setIsAddNewProductOpen(false);
@@ -79,7 +88,9 @@ function ProductModalAddNew({
           <ProductCategoryCheckBox
             {...{ selectedCategories, handleSelectedCategories }}
           />
-          <ProductVariants {...{ productVariants, handleProductVariants }} />
+          <ProductVariants
+            {...{ productVariants, handleProductVariants, setProductVariants }}
+          />
         </Stack>
       </DialogContent>
       <DialogActions>
