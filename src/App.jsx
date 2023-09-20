@@ -12,7 +12,8 @@ import ReportPageAdmin from './pages/admin/ReportPageAdmin';
 import MainPage from './pages/cashier/MainPage';
 import ReportPageCashier from './pages/cashier/ReportPageCashier';
 import LogoutUser from './components/LogoutUser';
-import NavbarAdmin from './components/admin/NavbarAdmin';
+import AdminNavbar from './components/admin/AdminNavbar';
+import CashierNavbar from './components/cashier/CashierNavbar';
 
 function App() {
   const authUser = useSelector((states) => states.authUser);
@@ -59,7 +60,7 @@ function App() {
     return (
       authUser.isAdmin && (
         <>
-          <NavbarAdmin />
+          <AdminNavbar />
           <Routes>
             <Route path="/admin/products" element={<ProductPage />} />
             <Route
@@ -85,19 +86,22 @@ function App() {
 
   return (
     authUser.isCashier && (
-      <Routes>
-        <Route
-          path="/cashier/main"
-          element={
-            <ChakraProvider>
-              <MainPage />
-            </ChakraProvider>
-          }
-        />
-        <Route path="/cashier/report" element={<ReportPageCashier />} />
-        <Route path="/cashier/*" element={<Navigate to="/cashier/main" />} />
-        <Route path="/logout" element={<LogoutUser />} />
-      </Routes>
+      <>
+        <CashierNavbar />
+        <Routes>
+          <Route
+            path="/cashier/main"
+            element={
+              <ChakraProvider>
+                <MainPage />
+              </ChakraProvider>
+            }
+          />
+          <Route path="/cashier/report" element={<ReportPageCashier />} />
+          <Route path="/cashier/*" element={<Navigate to="/cashier/main" />} />
+          <Route path="/logout" element={<LogoutUser />} />
+        </Routes>
+      </>
     )
   );
 }
