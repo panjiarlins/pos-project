@@ -1,13 +1,13 @@
 import { Stack, Switch, TextField, Typography } from '@mui/material';
 
-function InputDetails({
-  handleImage,
+function DetailsInput({
+  handleImageChange,
   status,
-  handleStatus,
+  handleStatusChange,
   name,
-  handleName,
+  handleNameChange,
   description,
-  handleDescription,
+  handleDescriptionChange,
 }) {
   return (
     <Stack spacing={2}>
@@ -17,7 +17,7 @@ function InputDetails({
           <Typography>Product status</Typography>
           <Switch
             checked={status}
-            onChange={handleStatus}
+            onChange={handleStatusChange}
             sx={{
               '& .MuiSwitch-switchBase.Mui-checked': {
                 color: 'success.light',
@@ -37,7 +37,7 @@ function InputDetails({
             id="new-product-image"
             type="file"
             accept="image/*"
-            onChange={handleImage}
+            onChange={handleImageChange}
           />
         </Stack>
         <TextField
@@ -48,7 +48,7 @@ function InputDetails({
           variant="outlined"
           fullWidth
           value={name}
-          onChange={handleName}
+          onChange={handleNameChange}
         />
         <TextField
           required
@@ -60,11 +60,11 @@ function InputDetails({
           multiline
           rows={10}
           value={description}
-          onChange={handleDescription}
+          onChange={handleDescriptionChange}
         />
       </Stack>
     </Stack>
   );
 }
 
-export default InputDetails;
+export default DetailsInput;

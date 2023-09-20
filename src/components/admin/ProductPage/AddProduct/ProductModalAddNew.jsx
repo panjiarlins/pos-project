@@ -7,6 +7,7 @@ import {
   Stack,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import { useState } from 'react';
 import ProductDetailsForm from './ProductDetailsForm';
 import ProductCategoryCheckBox from './ProductCategoryCheckBox';
 import { asyncCreateProduct } from '../../../../states/products/action';
@@ -33,8 +34,7 @@ function ProductModalAddNew({
     useValueInput('');
   const [selectedCategories, handleSelectedCategories, setSelectedCategories] =
     useCheckBoxList([]);
-  const [productVariants, handleProductVariants, setProductVariants] =
-    useValueInput([]);
+  const [variants, setVariants] = useState([]);
 
   const handleOnSave = () => {
     const formData = new FormData();
@@ -46,10 +46,10 @@ function ProductModalAddNew({
     formData.append(
       'variants',
       JSON.stringify(
-        productVariants.map(({ name, price, stock }) => ({
-          name,
-          price,
-          stock,
+        variants.map((variant) => ({
+          name: variant.name,
+          price: variant.price,
+          stock: variant.stock,
         }))
       )
     );
@@ -61,7 +61,7 @@ function ProductModalAddNew({
       setProductName('');
       setProductDescription('');
       setSelectedCategories([]);
-      setProductVariants([]);
+      setVariants([]);
     });
   };
 
@@ -88,9 +88,7 @@ function ProductModalAddNew({
           <ProductCategoryCheckBox
             {...{ selectedCategories, handleSelectedCategories }}
           />
-          <ProductVariants
-            {...{ productVariants, handleProductVariants, setProductVariants }}
-          />
+          <ProductVariants {...{ variants, setVariants }} />
         </Stack>
       </DialogContent>
       <DialogActions>

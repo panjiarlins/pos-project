@@ -64,13 +64,9 @@ function asyncCreateProduct(formData) {
   };
 }
 
-function asyncEditProduct(productId, formData) {
+function asyncEditProduct({ productId, formData }) {
   return async () => {
-    try {
-      await api.patch(`/products/${productId}`, formData);
-    } catch (error) {
-      console.log(error);
-    }
+    await api.patch(`/products/${productId}`, formData);
   };
 }
 
