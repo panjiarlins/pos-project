@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -42,7 +43,6 @@ import RegisterAdminModal from './NewAdmin';
 function TableAdmin() {
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [editedUserData, setEditedUserData] = useState({});
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
@@ -77,7 +77,7 @@ function TableAdmin() {
 
   const handleEditUser = (userId) => {
     const userToEdit = filteredData.find((user) => user.id === userId);
-    setEditedUserData(userToEdit); // Set the user data to edit
+    setEditedUserData(userToEdit);
     setIsEditModalOpen(true);
   };
 
@@ -138,6 +138,26 @@ function TableAdmin() {
     }
   };
 
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    // eslint-disable-next-line no-plusplus
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <Button
+          key={i}
+          // eslint-disable-next-line no-use-before-define
+          onClick={() => paginate(i)}
+          colorScheme={currentPage === i ? 'teal' : 'gray'}
+        >
+          {i}
+        </Button>
+      );
+    }
+    return buttons;
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -155,7 +175,6 @@ function TableAdmin() {
         <Button
           bg="red.500"
           color="white"
-          // _hover={{ bg: 'red.600' }}
           onClick={() => setIsRegisterModalOpen(true)}
         >
           + Admin
@@ -244,21 +263,8 @@ function TableAdmin() {
       />
 
       <Flex justify="center" mt="4">
-        {filteredData.length > itemsPerPage && (
-          <ButtonGroup spacing={2}>
-            {Array(Math.ceil(filteredData.length / itemsPerPage))
-              .fill()
-              .map((_, index) => (
-                <Button
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={index}
-                  onClick={() => paginate(index + 1)}
-                  colorScheme={currentPage === index + 1 ? 'gray' : 'red'}
-                >
-                  {index + 1}
-                </Button>
-              ))}
-          </ButtonGroup>
+        {totalPages > 1 && (
+          <ButtonGroup spacing={2}>{renderPaginationButtons()}</ButtonGroup>
         )}
       </Flex>
 

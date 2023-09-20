@@ -19,7 +19,7 @@ function setTransaction(transactions) {
 function asyncGetAllTransaction() {
   return async (dispatch) => {
     try {
-      const response = await api.get('/transactions');
+      const response = await api.get('/transVariant');
       dispatch(setTransaction(response.data.data));
       console.log(
         'Get all transactions successful. Response:',
