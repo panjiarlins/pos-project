@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToast } from '@chakra-ui/react';
-
 import { ProductsCard } from '../../components/cashier/MainPage/Products';
 import { asyncTransaction } from '../../states/transaction/action';
 import { useValueInput } from '../../hooks';
@@ -19,6 +18,7 @@ function MainPage() {
   useEffect(() => {
     dispatch(asyncReceiveProducts());
   }, [dispatch]);
+  
   const handleRemoveVariant = (variantId) => {
     const deletedVariants = variants.filter(
       (variant) => variant.variantId !== variantId
@@ -26,6 +26,7 @@ function MainPage() {
     setVariants(deletedVariants);
     console.log(deletedVariants);
   };
+  
   const handleCharge = async () => {
     try {
       await dispatch(

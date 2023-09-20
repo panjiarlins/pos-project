@@ -1,29 +1,35 @@
-import { SearchRounded } from '@mui/icons-material';
-import { IconButton, TextField, Tooltip } from '@mui/material';
+import { TextField } from '@mui/material';
+import { useEffect } from 'react';
 
 function ProductSearchInput({
-  searchName,
-  handleSearchNameChange,
+  searchParams,
+  updateQueryParams,
   handleOnReload,
 }) {
+  useEffect(() => {
+    // debounce
+    const timerId = setTimeout(handleOnReload, 300);
+    return () => clearTimeout(timerId);
+  }, [searchParams.get('name')]);
+
   return (
     <TextField
       color="info"
       size="small"
-      label="Search Products"
+      label="Search Products 🔍"
       variant="outlined"
-      value={searchName}
-      onChange={handleSearchNameChange}
+      value={searchParams.get('name') || ''}
+      onChange={({ target }) => updateQueryParams({ name: target.value })}
       sx={{ width: { md: '50%' } }}
-      InputProps={{
-        endAdornment: (
-          <Tooltip title="Search products" arrow>
-            <IconButton onClick={handleOnReload}>
-              <SearchRounded />
-            </IconButton>
-          </Tooltip>
-        ),
-      }}
+      // InputProps={{
+      //   endAdornment: (
+      //     <Tooltip title="Search products" arrow>
+      //       <IconButton onClick={handleOnReload}>
+      //         <SearchRounded />
+      //       </IconButton>
+      //     </Tooltip>
+      //   ),
+      // }}
     />
   );
 }

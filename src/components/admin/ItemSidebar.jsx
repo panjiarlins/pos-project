@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export function SidebarAdminListItem({ children, text, to }) {
+function ItemSidebar({ children, text, to }) {
   return (
     <Link to={to}>
       <ListItem>
@@ -42,3 +42,5 @@ export function SidebarAdminListItem({ children, text, to }) {
     </Link>
   );
 }
+
+export default ItemSidebar;

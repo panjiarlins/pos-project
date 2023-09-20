@@ -11,15 +11,45 @@ function receiveCategoriesActionCreator(categories) {
   };
 }
 
-function asyncReceiveCategories() {
+function asyncReceiveCategories({ name, page, perPage } = {}) {
   return async (dispatch) => {
-    try {
-      const { data } = await api.get(`/categories`);
-      dispatch(receiveCategoriesActionCreator(data.data));
-    } catch (error) {
-      console.log(error);
-    }
+    const nameQuery = name ? `name=${encodeURIComponent(name)}` : '';
+    const pageQuery = page ? `page=${encodeURIComponent(page)}` : '';
+    const perPageQuery = perPage
+      ? `perPage=${encodeURIComponent(perPage)}`
+      : '';
+    const allQuery = `${nameQuery}&${pageQuery}&${perPageQuery}`;
+
+    const { data } = await api.get(`/categories?${allQuery}`);
+    dispatch(receiveCategoriesActionCreator(data.data));
+
+    return data.info;
   };
 }
 
-export { ActionType, receiveCategoriesActionCreator, asyncReceiveCategories };
+function asyncCreateCategory(formData) {
+  return async () => {
+    await api.post('/categories', formData);
+  };
+}
+
+function asyncEditCategory(categoryId, formData) {
+  return async () => {
+    await api.patch(`/categories/${categoryId}`, formData);
+  };
+}
+
+function asyncDeleteCategory(categoryId) {
+  return async () => {
+    await api.delete(`/categories/${categoryId}`);
+  };
+}
+
+export {
+  ActionType,
+  receiveCategoriesActionCreator,
+  asyncReceiveCategories,
+  asyncCreateCategory,
+  asyncEditCategory,
+  asyncDeleteCategory,
+};

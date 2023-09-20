@@ -2,6 +2,9 @@ import { DeleteRounded, EditNoteRounded } from '@mui/icons-material';
 import {
   Avatar,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Switch,
   TableBody,
@@ -67,6 +70,18 @@ function ProductItem({ handleOnReload }) {
             </TableCell>
             <TableCell>{product.name}</TableCell>
             <TableCell>{product.description}</TableCell>
+            <TableCell>
+              <List>
+                {product.Variants.map((variant) => (
+                  <ListItem key={variant.id} divider disablePadding>
+                    <ListItemText
+                      primary={`${variant.name} (${variant.stock}Pcs)`}
+                      secondary={`Rp${variant.price.toLocaleString('id-ID')}`}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </TableCell>
             <TableCell align="center">
               <Tooltip
                 title={`Product status: ${

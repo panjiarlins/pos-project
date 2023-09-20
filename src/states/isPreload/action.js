@@ -22,7 +22,6 @@ function asyncPreloadProcess() {
   return async (dispatch) => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
       const { id } = jwtDecode(token);
 
       // GET user by userId
@@ -33,8 +32,7 @@ function asyncPreloadProcess() {
       });
 
       dispatch(setAuthUserActionCreator(data.data));
-    } catch (error) {
-      console.log(error?.response?.data?.message || error?.message);
+    } catch {
       dispatch(asyncUnsetAuthUser());
     } finally {
       dispatch(setIsPreloadActionCreator(false));

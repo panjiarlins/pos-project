@@ -28,6 +28,7 @@ function ProductList({ handleOnReload }) {
             <TableCell sx={{ color: 'white' }}>Image</TableCell>
             <TableCell sx={{ color: 'white' }}>Name</TableCell>
             <TableCell sx={{ color: 'white' }}>Description</TableCell>
+            <TableCell sx={{ color: 'white' }}>Variants</TableCell>
             <TableCell sx={{ color: 'white' }} align="center">
               Status
             </TableCell>

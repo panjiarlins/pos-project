@@ -5,6 +5,7 @@ import {
   Inventory2Rounded,
   LogoutRounded,
   SettingsRounded,
+  ShoppingCartRounded,
   StoreRounded,
   SupervisorAccountRounded,
 } from '@mui/icons-material';
@@ -17,9 +18,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { SidebarAdminListItem } from './SidebarAdminListItem';
+import { useSelector } from 'react-redux';
+import ItemSidebar from './ItemSidebar';
 
-function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
+function ContainerSidebar({ isSidebarOpen, setIsSidebarOpen }) {
+  const authUser = useSelector((states) => states.authUser);
+
   return (
     <Drawer
       anchor="left"
@@ -43,18 +47,18 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
             MANAGE
           </Typography>
           <List>
-            <SidebarAdminListItem text="Dashboard" to="/">
+            <ItemSidebar text="Dashboard" to="/admin">
               <DashboardRounded />
-            </SidebarAdminListItem>
-            <SidebarAdminListItem text="Products" to="/">
+            </ItemSidebar>
+            <ItemSidebar text="Products" to="/admin/products">
               <Inventory2Rounded />
-            </SidebarAdminListItem>
-            <SidebarAdminListItem text="Categories" to="/categories">
+            </ItemSidebar>
+            <ItemSidebar text="Categories" to="/admin/categories">
               <CategoryRounded />
-            </SidebarAdminListItem>
-            <SidebarAdminListItem text="Report" to="/admin-report">
+            </ItemSidebar>
+            <ItemSidebar text="Report" to="/admin/report">
               <AssessmentRounded />
-            </SidebarAdminListItem>
+            </ItemSidebar>
           </List>
         </Box>
         <Box>
@@ -62,19 +66,28 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
             PREFERENCES
           </Typography>
           <List>
-            <SidebarAdminListItem text="Admin Settings" to="/admin">
+            <ItemSidebar text="Admin Settings" to="/admin/administrator">
               <SupervisorAccountRounded />
-            </SidebarAdminListItem>
-            <SidebarAdminListItem text="General" to="/">
+            </ItemSidebar>
+            <ItemSidebar text="General" to="/admin/general">
               <SettingsRounded />
-            </SidebarAdminListItem>
+            </ItemSidebar>
           </List>
         </Box>
+        {authUser?.isCashier && (
+          <Box>
+            <List>
+              <ItemSidebar text="Cashier Page" to="/cashier">
+                <ShoppingCartRounded />
+              </ItemSidebar>
+            </List>
+          </Box>
+        )}
         <Box>
           <List>
-            <SidebarAdminListItem text="Logout" to="/logout">
+            <ItemSidebar text="Logout" to="/logout">
               <LogoutRounded />
-            </SidebarAdminListItem>
+            </ItemSidebar>
           </List>
         </Box>
       </Stack>
@@ -82,4 +95,4 @@ function SidebarAdmin({ isSidebarOpen, setIsSidebarOpen }) {
   );
 }
 
-export default SidebarAdmin;
+export default ContainerSidebar;
