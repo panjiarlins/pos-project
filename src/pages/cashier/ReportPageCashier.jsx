@@ -1,5 +1,11 @@
+import SalesReport from '../../components/cashier/ReportPageCashier/OrderDetail';
+
 function ReportPageCashier() {
-  return <div>Hello World</div>;
+  return (
+    <div>
+      <SalesReport />
+    </div>
+  );
 }
 
 export default ReportPageCashier;
