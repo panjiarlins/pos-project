@@ -97,7 +97,7 @@ function CustomModal({
         <ModalCloseButton />
         <ModalBody>
           <Image
-            width="500px"
+            width="700px"
             height="300px"
             objectFit="cover"
             src={`${import.meta.env.VITE_API_URL}/products/image/${

@@ -30,9 +30,9 @@ function ProductItem({ handleOnReload }) {
   const handleToggleStatus = (event, newValue) => {
     const formData = new FormData();
     formData.append('isActive', newValue);
-    dispatch(asyncEditProduct(event.target.value, formData)).then(
-      handleOnReload
-    );
+    dispatch(
+      asyncEditProduct({ productId: event.target.value, formData })
+    ).then(handleOnReload);
   };
 
   const handleOnEditButton = (product) => {
