@@ -16,7 +16,7 @@ function MainPage() {
   const [variants, setVariants] = useState([]);
 
   useEffect(() => {
-    dispatch(asyncReceiveProducts());
+    dispatch(asyncReceiveProducts({ perPage: 1000 }));
   }, [dispatch]);
   const handleRemoveVariant = (variantId) => {
     const deletedVariants = variants.filter(

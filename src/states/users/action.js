@@ -13,14 +13,14 @@ function receiveUsersActionCreator(users) {
     },
   };
 }
-function editUserActionCreator(users) {
-  return {
-    type: ActionType.EDIT_USER,
-    payload: {
-      users,
-    },
-  };
-}
+// function editUserActionCreator(users) {
+//   return {
+//     type: ActionType.EDIT_USER,
+//     payload: {
+//       users,
+//     },
+//   };
+// }
 function deleteUserActionCreator(userId) {
   return {
     type: ActionType.DELETE_USER,
@@ -42,17 +42,17 @@ function asyncGetAllUser() {
   };
 }
 
-function asyncEditUser(id, updatedUserData) {
-  return async (dispatch) => {
+function asyncEditUser(id, formData) {
+  return async () => {
     try {
-      const formData = new FormData();
-      // eslint-disable-next-line no-restricted-syntax, guard-for-in
-      for (const key in updatedUserData) {
-        formData.append(key, updatedUserData[key]);
-      }
+      // const formData = new FormData();
+      // // eslint-disable-next-line no-restricted-syntax, guard-for-in
+      // for (const key in updatedUserData) {
+      //   formData.append(key, updatedUserData[key]);
+      // }
       await api.patch(`/users/${id}`, formData);
 
-      dispatch(editUserActionCreator(updatedUserData));
+      // dispatch(editUserActionCreator(formData));
     } catch (error) {
       console.log(error?.response?.data?.message || error?.message);
     }
