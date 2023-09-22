@@ -10,7 +10,10 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 
-function InputCategories({ categories: selectedCategories, handleCategories }) {
+function CategoriesInput({
+  categories: selectedCategories,
+  handleCategoriesChange,
+}) {
   const categories = useSelector((states) => states.categories);
 
   return (
@@ -19,7 +22,7 @@ function InputCategories({ categories: selectedCategories, handleCategories }) {
       <List>
         {categories.map((category) => (
           <ListItem key={category.id} disablePadding>
-            <ListItemButton onClick={() => handleCategories(category.id)}>
+            <ListItemButton onClick={() => handleCategoriesChange(category.id)}>
               <ListItemIcon>
                 <Checkbox
                   edge="start"
@@ -41,4 +44,4 @@ function InputCategories({ categories: selectedCategories, handleCategories }) {
   );
 }
 
-export default InputCategories;
+export default CategoriesInput;

@@ -19,7 +19,7 @@ import {
   asyncDeleteProduct,
   asyncEditProduct,
 } from '../../../states/products/action';
-import ModalEdit from './EditProduct/ModalEdit';
+import EditModal from './EditProduct/EditModal';
 
 function ProductItem({ handleOnReload }) {
   const dispatch = useDispatch();
@@ -128,7 +128,7 @@ function ProductItem({ handleOnReload }) {
           </TableRow>
         ))}
       </TableBody>
-      <ModalEdit
+      <EditModal
         {...{
           productData,
           isModalEditOpen,

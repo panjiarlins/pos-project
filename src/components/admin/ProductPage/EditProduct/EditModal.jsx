@@ -15,33 +15,38 @@ import {
   useValueInput,
 } from '../../../../hooks';
 import { asyncEditProduct } from '../../../../states/products/action';
-import InputDetails from './InputDetails';
-import InputCategories from './InputCategories';
-import InputVariants from './InputVariants';
+import DetailsInput from './DetailsInput';
+import CategoriesInput from './CategoriesInput';
+import VariantsInput from './VariantsInput';
 
-function ModalEdit({
+function EditModal({
   productData,
   isModalEditOpen,
   setIsModalEditOpen,
   handleOnReload,
 }) {
   const dispatch = useDispatch();
-  const [productId, setProductId] = useState();
-  const [image, handleImage, setImage] = useSingleFileInput(null);
-  const [status, handleStatus, setStatus] = useMuiNewValue(true);
-  const [name, handleName, setName] = useValueInput('');
-  const [description, handleDescription, setDescription] = useValueInput('');
-  const [categories, handleCategories, setCategories] = useCheckBoxList([]);
-  const [variants, handleVariants, setVariants] = useValueInput('[]');
+  const [image, handleImageChange, setImage] = useSingleFileInput(null);
+  const [status, handleStatusChange, setStatus] = useMuiNewValue(true);
+  const [name, handleNameChange, setName] = useValueInput('');
+  const [description, handleDescriptionChange, setDescription] =
+    useValueInput('');
+  const [categories, handleCategoriesChange, setCategories] = useCheckBoxList(
+    []
+  );
+  const [variants, setVariants] = useState([]);
 
   useEffect(() => {
-    setProductId(productData.id);
     setImage(null);
-    setStatus(productData.isActive || true);
+    setStatus(productData.isActive === undefined ? true : productData.isActive);
     setName(productData.name || '');
     setDescription(productData.description || '');
     setCategories(productData.Categories?.map(({ id }) => id) || []);
-    setVariants(JSON.stringify(productData.Variants) || '[]');
+    setVariants(
+      productData.Variants
+        ? JSON.parse(JSON.stringify(productData.Variants))
+        : []
+    );
   }, [productData]);
 
   const handleOnSave = () => {
@@ -51,17 +56,23 @@ function ModalEdit({
     formData.append('name', name);
     formData.append('description', description);
     formData.append('categoryId', JSON.stringify(categories));
-    formData.append('variants', variants);
-    dispatch(asyncEditProduct(productId, formData)).then(() => {
-      handleOnReload();
-      setIsModalEditOpen(false);
-      setStatus(true);
-      setImage(null);
-      setName('');
-      setDescription('');
-      setCategories([]);
-      setVariants([]);
-    });
+    formData.append(
+      'variants',
+      JSON.stringify(
+        variants.map(({ id, name: varName, price, stock }) => ({
+          id,
+          name: varName,
+          price,
+          stock,
+        }))
+      )
+    );
+    dispatch(asyncEditProduct({ productId: productData.id, formData }))
+      .then(() => {
+        handleOnReload();
+        setIsModalEditOpen(false);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -73,19 +84,19 @@ function ModalEdit({
       <DialogTitle>Edit Product</DialogTitle>
       <DialogContent>
         <Stack spacing={4}>
-          <InputDetails
+          <DetailsInput
             {...{
-              handleImage,
+              handleImageChange,
               status,
-              handleStatus,
+              handleStatusChange,
               name,
-              handleName,
+              handleNameChange,
               description,
-              handleDescription,
+              handleDescriptionChange,
             }}
           />
-          <InputCategories {...{ categories, handleCategories }} />
-          <InputVariants {...{ variants, handleVariants }} />
+          <CategoriesInput {...{ categories, handleCategoriesChange }} />
+          <VariantsInput {...{ variants, setVariants }} />
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -97,4 +108,4 @@ function ModalEdit({
   );
 }
 
-export default ModalEdit;
+export default EditModal;

@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 
-function ProductVariants({ variants, setVariants }) {
+function VariantsInput({ variants, setVariants }) {
   const handleVariantOnAdd = () => {
     setVariants((prevState) => {
       const newState = [...prevState];
@@ -50,8 +50,8 @@ function ProductVariants({ variants, setVariants }) {
     <Stack spacing={2}>
       <Typography variant="h6">Product Variants</Typography>
       <Box>
-        {variants.map((variant, index) => (
-          <Accordion key={variant.key}>
+        {variants?.map((variant, index) => (
+          <Accordion key={variant.id || variant.key}>
             <AccordionSummary expandIcon={<ExpandMoreRounded />}>
               <Typography>{variant.name}</Typography>
             </AccordionSummary>
@@ -140,4 +140,4 @@ function ProductVariants({ variants, setVariants }) {
   );
 }
 
-export default ProductVariants;
+export default VariantsInput;
