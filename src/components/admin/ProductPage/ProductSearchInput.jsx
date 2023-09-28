@@ -1,14 +1,28 @@
 import { TextField } from '@mui/material';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { asyncReceiveProducts } from '../../../states/products/action';
 
-function ProductSearchInput({
-  searchParams,
-  updateQueryParams,
-  handleOnReload,
-}) {
+function ProductSearchInput({ searchParams, updateQueryParams }) {
+  const dispatch = useDispatch();
+
+  const handleOnSearch = () => {
+    dispatch(
+      asyncReceiveProducts({
+        name: searchParams.get('name'),
+        categoryId: searchParams.get('currCategoryId'),
+        sortBy: searchParams.get('sortBy'),
+        orderBy: searchParams.get('orderBy'),
+        isPaginated: searchParams.get('isPaginated'),
+        page: searchParams.get('page'),
+        perPage: searchParams.get('perPage'),
+      })
+    );
+  };
+
   useEffect(() => {
     // debounce
-    const timerId = setTimeout(handleOnReload, 300);
+    const timerId = setTimeout(handleOnSearch, 300);
     return () => clearTimeout(timerId);
   }, [searchParams.get('name')]);
 

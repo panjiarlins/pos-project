@@ -21,7 +21,7 @@ import {
 } from '../../../states/products/action';
 import EditModal from './EditProduct/EditModal';
 
-function ProductItem({ handleOnReload }) {
+function ProductItem() {
   const dispatch = useDispatch();
   const products = useSelector((states) => states.products);
   const [productData, setProductData] = useState({});
@@ -30,9 +30,7 @@ function ProductItem({ handleOnReload }) {
   const handleToggleStatus = (event, newValue) => {
     const formData = new FormData();
     formData.append('isActive', newValue);
-    dispatch(asyncEditProduct(event.target.value, formData)).then(
-      handleOnReload
-    );
+    dispatch(asyncEditProduct({ productId: event.target.value, formData }));
   };
 
   const handleOnEditButton = (product) => {
@@ -41,7 +39,7 @@ function ProductItem({ handleOnReload }) {
   };
 
   const handleOnDelete = (productId) => {
-    dispatch(asyncDeleteProduct(productId)).then(handleOnReload);
+    dispatch(asyncDeleteProduct(productId));
   };
 
   return (
@@ -133,7 +131,6 @@ function ProductItem({ handleOnReload }) {
           productData,
           isModalEditOpen,
           setIsModalEditOpen,
-          handleOnReload,
         }}
       />
     </>

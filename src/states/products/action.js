@@ -1,14 +1,32 @@
+import { hideLoading, showLoading } from 'react-redux-loading-bar';
 import { api } from '../../api';
+import { setProductPaginationActionCreator } from '../productPagination/action';
+import { setAlertActionCreator } from '../alert/action';
 
 const ActionType = {
   RECEIVE_PRODUCTS: 'RECEIVE_PRODUCTS',
-  GETALL_PRODUCTS: 'GETALL_PRODUCTS',
+  EDIT_PRODUCT: 'EDIT_PRODUCT',
+  DELETE_PRODUCT: 'DELETE_PRODUCT',
 };
 
 function receiveProductsActionCreator(products) {
   return {
     type: ActionType.RECEIVE_PRODUCTS,
     payload: { products },
+  };
+}
+
+function editProductActionCreator(product) {
+  return {
+    type: ActionType.EDIT_PRODUCT,
+    payload: { product },
+  };
+}
+
+function deleteProductActionCreator(productId) {
+  return {
+    type: ActionType.DELETE_PRODUCT,
+    payload: { productId },
   };
 }
 
@@ -28,54 +46,87 @@ function asyncReceiveProducts({
   categoryId,
   sortBy,
   orderBy,
+  isPaginated,
   page,
   perPage,
-} = {}) {
+}) {
   return async (dispatch) => {
-    const nameQuery = name ? `name=${encodeURIComponent(name)}` : '';
-    const categoryIdQuery =
-      categoryId && categoryId !== '0'
-        ? `categoryId=${encodeURIComponent(categoryId)}`
-        : '';
-    const sortByQuery = sortBy ? `sortBy=${encodeURIComponent(sortBy)}` : '';
-    const orderByQuery = orderBy
-      ? `orderBy=${encodeURIComponent(orderBy)}`
-      : '';
-    const pageQuery = page ? `page=${encodeURIComponent(page)}` : '';
-    const perPageQuery = perPage
-      ? `perPage=${encodeURIComponent(perPage)}`
-      : '';
-    const allQuery = `${nameQuery}&${categoryIdQuery}&${sortByQuery}&${orderByQuery}&${pageQuery}&${perPageQuery}`;
+    try {
+      dispatch(showLoading());
 
-    const { data } = await api.get(`/products?${allQuery}`);
-    dispatch(receiveProductsActionCreator(data.data));
+      const nameQ = name ? `name=${encodeURIComponent(name)}&` : '';
+      const categoryIdQ =
+        categoryId && categoryId !== '0'
+          ? `categoryId=${encodeURIComponent(categoryId)}&`
+          : '';
+      const sortByQ = sortBy ? `sortBy=${encodeURIComponent(sortBy)}&` : '';
+      const orderByQ = orderBy ? `orderBy=${encodeURIComponent(orderBy)}&` : '';
+      const isPaginatedQ =
+        isPaginated === 'false'
+          ? `isPaginated=${encodeURIComponent(false)}&`
+          : `isPaginated=${encodeURIComponent(true)}&`;
+      const pageQ = page ? `page=${encodeURIComponent(page)}&` : '';
+      const perPageQ = perPage ? `perPage=${encodeURIComponent(perPage)}&` : '';
+      const allQuery = `?${nameQ}${categoryIdQ}${sortByQ}${orderByQ}${isPaginatedQ}${pageQ}${perPageQ}`;
 
-    return data.info;
+      const { data } = await api.get(`/products${allQuery}`);
+      dispatch(receiveProductsActionCreator(data.data));
+      dispatch(setProductPaginationActionCreator(data.info));
+    } catch (err) {
+      dispatch(setAlertActionCreator({ err }));
+    } finally {
+      dispatch(hideLoading());
+    }
   };
 }
 
 function asyncCreateProduct(formData) {
-  return async () => {
+  return async (dispatch) => {
     try {
+      dispatch(showLoading());
       await api.post('/products', formData);
-    } catch (error) {
-      console.log(error);
+      dispatch(setAlertActionCreator());
+      dispatch(asyncReceiveProducts());
+      return true;
+    } catch (err) {
+      dispatch(setAlertActionCreator({ err }));
+      return false;
+    } finally {
+      dispatch(hideLoading());
     }
   };
 }
 
 function asyncEditProduct({ productId, formData }) {
-  return async () => {
-    await api.patch(`/products/${productId}`, formData);
+  return async (dispatch) => {
+    try {
+      dispatch(showLoading());
+      const { data } = await api.patch(`/products/${productId}`, formData);
+      dispatch(editProductActionCreator(data.data));
+      dispatch(setAlertActionCreator());
+      return true;
+    } catch (err) {
+      dispatch(setAlertActionCreator({ err }));
+      return false;
+    } finally {
+      dispatch(hideLoading());
+    }
   };
 }
 
 function asyncDeleteProduct(productId) {
-  return async () => {
+  return async (dispatch) => {
     try {
+      dispatch(showLoading());
       await api.delete(`/products/${productId}`);
-    } catch (error) {
-      console.log(error);
+      dispatch(deleteProductActionCreator(productId));
+      dispatch(setAlertActionCreator());
+      return true;
+    } catch (err) {
+      dispatch(setAlertActionCreator({ err }));
+      return false;
+    } finally {
+      dispatch(hideLoading());
     }
   };
 }
@@ -83,6 +134,8 @@ function asyncDeleteProduct(productId) {
 export {
   ActionType,
   receiveProductsActionCreator,
+  editProductActionCreator,
+  deleteProductActionCreator,
   asyncReceiveProducts,
   asyncCreateProduct,
   asyncEditProduct,
