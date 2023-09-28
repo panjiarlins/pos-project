@@ -19,13 +19,13 @@ import {
   asyncDeleteProduct,
   asyncEditProduct,
 } from '../../../states/products/action';
-import EditModal from './EditProduct/EditModal';
+import EditModal from './EditProductModal/EditModal';
 
-function ProductItem() {
+function ItemTable() {
   const dispatch = useDispatch();
   const products = useSelector((states) => states.products);
   const [productData, setProductData] = useState({});
-  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleToggleStatus = (event, newValue) => {
     const formData = new FormData();
@@ -33,12 +33,12 @@ function ProductItem() {
     dispatch(asyncEditProduct({ productId: event.target.value, formData }));
   };
 
-  const handleOnEditButton = (product) => {
+  const handleEditButtonClick = (product) => {
     setProductData(product);
-    setIsModalEditOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  const handleOnDelete = (productId) => {
+  const handleDeleteButtonClick = (productId) => {
     dispatch(asyncDeleteProduct(productId));
   };
 
@@ -106,7 +106,7 @@ function ProductItem() {
               <Stack direction="row">
                 <Tooltip title="Edit product" arrow>
                   <IconButton
-                    onClick={() => handleOnEditButton(product)}
+                    onClick={() => handleEditButtonClick(product)}
                     sx={{ '&:hover': { color: 'info.main' } }}
                   >
                     <EditNoteRounded />
@@ -115,7 +115,7 @@ function ProductItem() {
                 <Tooltip title="Delete product" arrow>
                   <IconButton
                     value="productId"
-                    onClick={() => handleOnDelete(product.id)}
+                    onClick={() => handleDeleteButtonClick(product.id)}
                     sx={{ '&:hover': { color: 'error.main' } }}
                   >
                     <DeleteRounded />
@@ -129,12 +129,12 @@ function ProductItem() {
       <EditModal
         {...{
           productData,
-          isModalEditOpen,
-          setIsModalEditOpen,
+          isEditModalOpen,
+          setIsEditModalOpen,
         }}
       />
     </>
   );
 }
 
-export default ProductItem;
+export default ItemTable;

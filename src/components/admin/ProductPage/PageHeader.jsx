@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 
-function ProductTitle() {
+function PageHeader() {
   return (
     <Box>
       <Typography
@@ -17,4 +17,4 @@ function ProductTitle() {
   );
 }
 
-export default ProductTitle;
+export default PageHeader;

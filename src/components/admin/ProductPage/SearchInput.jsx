@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncReceiveProducts } from '../../../states/products/action';
 
-function ProductSearchInput({ searchParams, updateQueryParams }) {
+function SearchInput({ searchParams, updateQueryParams }) {
   const dispatch = useDispatch();
 
   const handleOnSearch = () => {
@@ -35,17 +35,8 @@ function ProductSearchInput({ searchParams, updateQueryParams }) {
       value={searchParams.get('name') || ''}
       onChange={({ target }) => updateQueryParams({ name: target.value })}
       sx={{ width: { md: '50%' } }}
-      // InputProps={{
-      //   endAdornment: (
-      //     <Tooltip title="Search products" arrow>
-      //       <IconButton onClick={handleOnReload}>
-      //         <SearchRounded />
-      //       </IconButton>
-      //     </Tooltip>
-      //   ),
-      // }}
     />
   );
 }
 
-export default ProductSearchInput;
+export default SearchInput;

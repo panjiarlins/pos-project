@@ -1,10 +1,10 @@
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { Box, Tab } from '@mui/material';
 import { useSelector } from 'react-redux';
-import ProductList from './ProductList';
 import PaginationTable from './PaginationTable';
+import ContainerTable from './ContainerTable';
 
-function ProductCategoryTab({ searchParams, updateQueryParams }) {
+function ContainerTab({ searchParams, updateQueryParams }) {
   const categories = useSelector((states) => states.categories);
 
   return (
@@ -38,11 +38,11 @@ function ProductCategoryTab({ searchParams, updateQueryParams }) {
             ))}
           </TabList>
           <TabPanel value="0">
-            <ProductList />
+            <ContainerTable />
           </TabPanel>
           {categories.map((category) => (
             <TabPanel key={category.id} value={`${category.id}`}>
-              <ProductList />
+              <ContainerTable />
             </TabPanel>
           ))}
         </TabContext>
@@ -52,4 +52,4 @@ function ProductCategoryTab({ searchParams, updateQueryParams }) {
   );
 }
 
-export default ProductCategoryTab;
+export default ContainerTab;

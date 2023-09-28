@@ -2,7 +2,7 @@ import { DownloadRounded } from '@mui/icons-material';
 import { Button, Tooltip } from '@mui/material';
 import React from 'react';
 
-function ProductDownloadButton() {
+function DownloadButton() {
   return (
     <Tooltip title="Download product list" arrow>
       <Button
@@ -17,4 +17,4 @@ function ProductDownloadButton() {
   );
 }
 
-export default ProductDownloadButton;
+export default DownloadButton;

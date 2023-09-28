@@ -19,17 +19,17 @@ import DetailsInput from './DetailsInput';
 import CategoriesInput from './CategoriesInput';
 import VariantsInput from './VariantsInput';
 
-function EditModal({ productData, isModalEditOpen, setIsModalEditOpen }) {
+function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
   const dispatch = useDispatch();
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
   const [status, handleStatusChange, setStatus] = useMuiNewValue(true);
   const [name, handleNameChange, setName] = useValueInput('');
+  const [variants, setVariants] = useState([]);
   const [description, handleDescriptionChange, setDescription] =
     useValueInput('');
   const [categories, handleCategoriesChange, setCategories] = useCheckBoxList(
     []
   );
-  const [variants, setVariants] = useState([]);
 
   useEffect(() => {
     setImage(null);
@@ -65,7 +65,7 @@ function EditModal({ productData, isModalEditOpen, setIsModalEditOpen }) {
     dispatch(asyncEditProduct({ productId: productData.id, formData })).then(
       (isSuccess) => {
         if (isSuccess) {
-          setIsModalEditOpen(false);
+          setIsEditModalOpen(false);
         }
       }
     );
@@ -74,8 +74,8 @@ function EditModal({ productData, isModalEditOpen, setIsModalEditOpen }) {
   return (
     <Dialog
       fullWidth
-      open={isModalEditOpen}
-      onClose={() => setIsModalEditOpen(false)}
+      open={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
     >
       <DialogTitle>Edit Product</DialogTitle>
       <DialogContent>

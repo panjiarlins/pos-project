@@ -10,9 +10,9 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 
-function ProductCategoryCheckBox({
+function CategoriesInput({
   selectedCategories,
-  handleSelectedCategories,
+  handleSelectedCategoriesChange,
 }) {
   const categories = useSelector((states) => states.categories);
 
@@ -23,7 +23,7 @@ function ProductCategoryCheckBox({
         {categories.map((category) => (
           <ListItem key={category.id} disablePadding>
             <ListItemButton
-              onClick={() => handleSelectedCategories(category.id)}
+              onClick={() => handleSelectedCategoriesChange(category.id)}
             >
               <ListItemIcon>
                 <Checkbox
@@ -43,4 +43,4 @@ function ProductCategoryCheckBox({
   );
 }
 
-export default ProductCategoryCheckBox;
+export default CategoriesInput;

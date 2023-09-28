@@ -6,9 +6,9 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import ProductItem from './ProductItem';
+import ItemTable from './ItemTable';
 
-function ProductList() {
+function ContainerTable() {
   return (
     <TableContainer
       component={Paper}
@@ -35,10 +35,10 @@ function ProductList() {
             <TableCell />
           </TableRow>
         </TableHead>
-        <ProductItem />
+        <ItemTable />
       </Table>
     </TableContainer>
   );
 }
 
-export default ProductList;
+export default ContainerTable;

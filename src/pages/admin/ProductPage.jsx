@@ -3,14 +3,14 @@ import { useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
 import { asyncReceiveProducts } from '../../states/products/action';
 import { asyncReceiveCategories } from '../../states/categories/action';
-import ProductTitle from '../../components/admin/ProductPage/ProductTitle';
-import ProductCategoryTab from '../../components/admin/ProductPage/ProductCategoryTab';
-import ProductSearchInput from '../../components/admin/ProductPage/ProductSearchInput';
-import ProductDownloadButton from '../../components/admin/ProductPage/ProductDownloadButton';
-import ProductAddNewButton from '../../components/admin/ProductPage/ProductAddNewButton';
 import SelectSortBy from '../../components/admin/ProductPage/SelectSortBy';
 import SelectOrderBy from '../../components/admin/ProductPage/SelectOrderBy';
 import useCustomSearchParams from '../../hooks/useCustomSearchParams';
+import PageHeader from '../../components/admin/ProductPage/PageHeader';
+import SearchInput from '../../components/admin/ProductPage/SearchInput';
+import DownloadButton from '../../components/admin/ProductPage/DownloadButton';
+import CreateButton from '../../components/admin/ProductPage/CreateButton';
+import ContainerTab from '../../components/admin/ProductPage/ContainerTab';
 
 function ProductPage() {
   const dispatch = useDispatch();
@@ -49,15 +49,15 @@ function ProductPage() {
       mx="auto"
       maxWidth="1200px"
     >
-      <ProductTitle />
+      <PageHeader />
       <Box>
         <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
-          <ProductSearchInput {...{ searchParams, updateQueryParams }} />
+          <SearchInput {...{ searchParams, updateQueryParams }} />
           <Box sx={{ flexGrow: 1 }} display={{ xs: 'none', md: 'inherit' }} />
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <Stack direction="row" spacing={1} justifyContent="center">
-              <ProductDownloadButton />
-              <ProductAddNewButton />
+              <DownloadButton />
+              <CreateButton />
             </Stack>
             <Stack direction="row" spacing={1} justifyContent="center">
               <SelectSortBy {...{ searchParams, updateQueryParams }} />
@@ -66,7 +66,7 @@ function ProductPage() {
           </Stack>
         </Stack>
       </Box>
-      <ProductCategoryTab {...{ searchParams, updateQueryParams }} />
+      <ContainerTab {...{ searchParams, updateQueryParams }} />
     </Stack>
   );
 }

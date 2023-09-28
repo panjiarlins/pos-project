@@ -1,10 +1,10 @@
 import { AddCircleRounded } from '@mui/icons-material';
 import { Button, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
-import ProductModalAddNew from './AddProduct/ProductModalAddNew';
+import CreateModal from './CreateProductModal/CreateModal';
 
-function ProductAddNewButton() {
-  const [isAddNewProductOpen, setIsAddNewProductOpen] = useState(false);
+function CreateButton() {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <>
@@ -14,16 +14,14 @@ function ProductAddNewButton() {
           size="small"
           variant="contained"
           startIcon={<AddCircleRounded />}
-          onClick={() => setIsAddNewProductOpen(true)}
+          onClick={() => setIsCreateModalOpen(true)}
         >
           Product
         </Button>
       </Tooltip>
-      <ProductModalAddNew
-        {...{ isAddNewProductOpen, setIsAddNewProductOpen }}
-      />
+      <CreateModal {...{ isCreateModalOpen, setIsCreateModalOpen }} />
     </>
   );
 }
 
-export default ProductAddNewButton;
+export default CreateButton;

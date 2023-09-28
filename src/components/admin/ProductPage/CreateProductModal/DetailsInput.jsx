@@ -1,13 +1,13 @@
 import { Stack, Switch, TextField, Typography } from '@mui/material';
 
-function ProductDetailsForm({
-  handleProductImage,
-  isProductActive,
-  handleIsProductActive,
-  productName,
-  handleProductName,
-  productDescription,
-  handleProductDescription,
+function DetailsInput({
+  handleImageChange,
+  isActive,
+  handleIsActiveChange,
+  name,
+  handleNameChange,
+  description,
+  handleDescriptionChange,
 }) {
   return (
     <Stack spacing={2}>
@@ -16,8 +16,8 @@ function ProductDetailsForm({
         <Stack direction="row" alignItems="center" spacing={2}>
           <Typography>Product status</Typography>
           <Switch
-            checked={isProductActive}
-            onChange={handleIsProductActive}
+            checked={isActive}
+            onChange={handleIsActiveChange}
             sx={{
               '& .MuiSwitch-switchBase.Mui-checked': {
                 color: 'success.light',
@@ -37,7 +37,7 @@ function ProductDetailsForm({
             id="new-product-image"
             type="file"
             accept="image/*"
-            onChange={handleProductImage}
+            onChange={handleImageChange}
           />
         </Stack>
         <TextField
@@ -47,8 +47,8 @@ function ProductDetailsForm({
           label="Product name"
           variant="outlined"
           fullWidth
-          value={productName}
-          onChange={handleProductName}
+          value={name}
+          onChange={handleNameChange}
         />
         <TextField
           required
@@ -59,12 +59,12 @@ function ProductDetailsForm({
           fullWidth
           multiline
           rows={10}
-          value={productDescription}
-          onChange={handleProductDescription}
+          value={description}
+          onChange={handleDescriptionChange}
         />
       </Stack>
     </Stack>
   );
 }
 
-export default ProductDetailsForm;
+export default DetailsInput;
