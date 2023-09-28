@@ -17,7 +17,9 @@ function ProductPage() {
   const [searchParams, updateQueryParams] = useCustomSearchParams();
 
   useEffect(() => {
-    dispatch(asyncReceiveCategories()).catch((error) => console.log(error));
+    dispatch(asyncReceiveCategories({ perPage: 1000 })).catch((error) =>
+      console.log(error)
+    );
     dispatch(
       asyncReceiveProducts({
         name: searchParams.get('name'),

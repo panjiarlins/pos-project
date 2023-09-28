@@ -13,14 +13,14 @@ export function ProductsCard({ variants, setVariants }) {
   const [isSmallScreen] = useMediaQuery('(max-width: 768px)');
 
   useEffect(() => {
-    dispatch(asyncReceiveProducts());
+    dispatch(asyncReceiveProducts({ perPage: 1000 }));
   }, [dispatch]);
 
   const getGridTemplateColumns = () => {
     if (isSmallScreen) {
       return 'repeat(1, 1fr)';
     }
-    return 'repeat(4, 1fr)';
+    return 'repeat(3, 1fr)';
   };
 
   return (

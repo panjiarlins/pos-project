@@ -43,7 +43,7 @@ import RegisterAdminModal from './NewAdmin';
 function TableAdmin() {
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  // const [selectedUserId, setSelectedUserId] = useState(null);
   const [editedUserData, setEditedUserData] = useState({});
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,7 +54,7 @@ function TableAdmin() {
   const data = useSelector((state) => state.users);
   const [imagePreview, setImagePreview] = useState(null);
   const toast = useToast();
-
+  console.log(editedUserData, 'editUserData');
   useEffect(() => {
     dispatch(asyncGetAllUser());
   }, [dispatch]);
@@ -79,8 +79,8 @@ function TableAdmin() {
     const userToEdit = filteredData.find((user) => user.id === userId);
     setEditedUserData(userToEdit);
     setIsEditModalOpen(true);
+    console.log(userToEdit, 'edit');
   };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -114,15 +114,15 @@ function TableAdmin() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (selectedUserId) => {
     try {
       const formdata = new FormData();
       formdata.append('username', editedUserData.username);
       formdata.append('fullname', editedUserData.fullname);
       formdata.append('password', editedUserData.password);
       formdata.append('email', editedUserData.email);
-      formdata.append('image', editedUserData.image);
-      await dispatch(asyncEditUser(selectedUserId, editedUserData));
+      if (imagePreview) formdata.append('image', imagePreview.blob);
+      await dispatch(asyncEditUser(selectedUserId, formdata));
       setIsEditModalOpen(false);
       dispatch(asyncGetAllUser());
       toast({
@@ -212,14 +212,16 @@ function TableAdmin() {
           </Tr>
         </Thead>
         <Tbody>
-          {currentData.map((user, index) => (
+          {currentData?.map((user, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <Tr key={index}>
               <Td>
                 <Flex align="center">
                   <Avatar
                     size="sm"
-                    src={imagePreview ? imagePreview.url : editedUserData.image}
+                    src={`${import.meta.env.VITE_API_URL}/users/image/${
+                      user?.id
+                    }`}
                     mb="1"
                     cursor="pointer"
                     _hover={{ opacity: 0.8 }}
@@ -278,7 +280,12 @@ function TableAdmin() {
               <label htmlFor="file-input">
                 <Avatar
                   size="xl"
-                  src={imagePreview ? imagePreview.url : editedUserData.image}
+                  src={
+                    imagePreview?.url ||
+                    `${import.meta.env.VITE_API_URL}/users/image/${
+                      editedUserData?.id
+                    }`
+                  }
                   mb="4"
                   cursor="pointer"
                   _hover={{ opacity: 0.8 }}
@@ -344,7 +351,10 @@ function TableAdmin() {
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="teal" onClick={handleSubmit}>
+            <Button
+              colorScheme="teal"
+              onClick={() => handleSubmit(editedUserData.id)}
+            >
               Simpan
             </Button>
             <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>
