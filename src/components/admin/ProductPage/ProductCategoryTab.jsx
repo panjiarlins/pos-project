@@ -4,12 +4,7 @@ import { useSelector } from 'react-redux';
 import ProductList from './ProductList';
 import PaginationTable from './PaginationTable';
 
-function ProductCategoryTab({
-  searchParams,
-  updateQueryParams,
-  handleOnReload,
-  paginationInfo,
-}) {
+function ProductCategoryTab({ searchParams, updateQueryParams }) {
   const categories = useSelector((states) => states.categories);
 
   return (
@@ -43,22 +38,16 @@ function ProductCategoryTab({
             ))}
           </TabList>
           <TabPanel value="0">
-            <ProductList {...{ handleOnReload }} />
+            <ProductList />
           </TabPanel>
           {categories.map((category) => (
             <TabPanel key={category.id} value={`${category.id}`}>
-              <ProductList {...{ handleOnReload }} />
+              <ProductList />
             </TabPanel>
           ))}
         </TabContext>
       </Box>
-      <PaginationTable
-        {...{
-          searchParams,
-          updateQueryParams,
-          paginationInfo,
-        }}
-      />
+      <PaginationTable {...{ searchParams, updateQueryParams }} />
     </>
   );
 }

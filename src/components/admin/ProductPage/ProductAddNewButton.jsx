@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import ProductModalAddNew from './AddProduct/ProductModalAddNew';
 
-function ProductAddNewButton({ handleOnReload }) {
+function ProductAddNewButton() {
   const [isAddNewProductOpen, setIsAddNewProductOpen] = useState(false);
 
   return (
@@ -20,11 +20,7 @@ function ProductAddNewButton({ handleOnReload }) {
         </Button>
       </Tooltip>
       <ProductModalAddNew
-        {...{
-          isAddNewProductOpen,
-          setIsAddNewProductOpen,
-          handleOnReload,
-        }}
+        {...{ isAddNewProductOpen, setIsAddNewProductOpen }}
       />
     </>
   );

@@ -14,6 +14,8 @@ import ReportPageCashier from './pages/cashier/ReportPageCashier';
 import LogoutUser from './components/LogoutUser';
 import AdminNavbar from './components/admin/AdminNavbar';
 import CashierNavbar from './components/cashier/CashierNavbar';
+import Alert from './components/Alert';
+import Loading from './components/Loading';
 
 function App() {
   const authUser = useSelector((states) => states.authUser);
@@ -60,6 +62,8 @@ function App() {
     return (
       authUser.isAdmin && (
         <>
+          <Alert />
+          <Loading />
           <AdminNavbar />
           <Routes>
             <Route path="/admin/products" element={<ProductPage />} />
@@ -87,6 +91,8 @@ function App() {
   return (
     authUser.isCashier && (
       <>
+        <Alert />
+        <Loading />
         <CashierNavbar />
         <Routes>
           <Route

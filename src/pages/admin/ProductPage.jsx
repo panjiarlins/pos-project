@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
 import { asyncReceiveProducts } from '../../states/products/action';
 import { asyncReceiveCategories } from '../../states/categories/action';
@@ -15,7 +15,6 @@ import useCustomSearchParams from '../../hooks/useCustomSearchParams';
 function ProductPage() {
   const dispatch = useDispatch();
   const [searchParams, updateQueryParams] = useCustomSearchParams();
-  const [paginationInfo, setPaginationInfo] = useState({});
 
   useEffect(() => {
     dispatch(asyncReceiveCategories({ perPage: 1000 })).catch((error) =>
@@ -27,35 +26,20 @@ function ProductPage() {
         categoryId: searchParams.get('currCategoryId'),
         sortBy: searchParams.get('sortBy'),
         orderBy: searchParams.get('orderBy'),
+        isPaginated: searchParams.get('isPaginated'),
         page: searchParams.get('page'),
         perPage: searchParams.get('perPage'),
       })
-    )
-      .then(setPaginationInfo)
-      .catch((error) => console.log(error));
+    );
   }, [
     dispatch,
     searchParams.get('currCategoryId'),
     searchParams.get('sortBy'),
     searchParams.get('orderBy'),
+    searchParams.get('isPaginated'),
     searchParams.get('page'),
     searchParams.get('perPage'),
   ]);
-
-  const handleOnReload = () => {
-    dispatch(
-      asyncReceiveProducts({
-        name: searchParams.get('name'),
-        categoryId: searchParams.get('currCategoryId'),
-        sortBy: searchParams.get('sortBy'),
-        orderBy: searchParams.get('orderBy'),
-        page: searchParams.get('page'),
-        perPage: searchParams.get('perPage'),
-      })
-    )
-      .then(setPaginationInfo)
-      .catch((error) => console.log(error));
-  };
 
   return (
     <Stack
@@ -68,14 +52,12 @@ function ProductPage() {
       <ProductTitle />
       <Box>
         <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
-          <ProductSearchInput
-            {...{ searchParams, updateQueryParams, handleOnReload }}
-          />
+          <ProductSearchInput {...{ searchParams, updateQueryParams }} />
           <Box sx={{ flexGrow: 1 }} display={{ xs: 'none', md: 'inherit' }} />
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <Stack direction="row" spacing={1} justifyContent="center">
               <ProductDownloadButton />
-              <ProductAddNewButton {...{ handleOnReload }} />
+              <ProductAddNewButton />
             </Stack>
             <Stack direction="row" spacing={1} justifyContent="center">
               <SelectSortBy {...{ searchParams, updateQueryParams }} />
@@ -84,9 +66,7 @@ function ProductPage() {
           </Stack>
         </Stack>
       </Box>
-      <ProductCategoryTab
-        {...{ searchParams, updateQueryParams, handleOnReload, paginationInfo }}
-      />
+      <ProductCategoryTab {...{ searchParams, updateQueryParams }} />
     </Stack>
   );
 }

@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import ProductItem from './ProductItem';
 
-function ProductList({ handleOnReload }) {
+function ProductList() {
   return (
     <TableContainer
       component={Paper}
@@ -35,7 +35,7 @@ function ProductList({ handleOnReload }) {
             <TableCell />
           </TableRow>
         </TableHead>
-        <ProductItem {...{ handleOnReload }} />
+        <ProductItem />
       </Table>
     </TableContainer>
   );

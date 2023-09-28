@@ -19,12 +19,7 @@ import DetailsInput from './DetailsInput';
 import CategoriesInput from './CategoriesInput';
 import VariantsInput from './VariantsInput';
 
-function EditModal({
-  productData,
-  isModalEditOpen,
-  setIsModalEditOpen,
-  handleOnReload,
-}) {
+function EditModal({ productData, isModalEditOpen, setIsModalEditOpen }) {
   const dispatch = useDispatch();
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
   const [status, handleStatusChange, setStatus] = useMuiNewValue(true);
@@ -67,12 +62,13 @@ function EditModal({
         }))
       )
     );
-    dispatch(asyncEditProduct({ productId: productData.id, formData }))
-      .then(() => {
-        handleOnReload();
-        setIsModalEditOpen(false);
-      })
-      .catch((error) => console.log(error));
+    dispatch(asyncEditProduct({ productId: productData.id, formData })).then(
+      (isSuccess) => {
+        if (isSuccess) {
+          setIsModalEditOpen(false);
+        }
+      }
+    );
   };
 
   return (

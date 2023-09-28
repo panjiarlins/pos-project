@@ -19,11 +19,7 @@ import {
 } from '../../../../hooks';
 import ProductVariants from './ProductVariants';
 
-function ProductModalAddNew({
-  isAddNewProductOpen,
-  setIsAddNewProductOpen,
-  handleOnReload,
-}) {
+function ProductModalAddNew({ isAddNewProductOpen, setIsAddNewProductOpen }) {
   const dispatch = useDispatch();
   const [isProductActive, handleIsProductActive, setIsProductActive] =
     useMuiNewValue(true);
@@ -38,8 +34,8 @@ function ProductModalAddNew({
 
   const handleOnSave = () => {
     const formData = new FormData();
+    if (productImage) formData.append('image', productImage);
     formData.append('isActive', isProductActive);
-    formData.append('image', productImage);
     formData.append('name', productName);
     formData.append('description', productDescription);
     formData.append('categoryId', JSON.stringify(selectedCategories));
@@ -53,15 +49,16 @@ function ProductModalAddNew({
         }))
       )
     );
-    dispatch(asyncCreateProduct(formData)).then(() => {
-      handleOnReload();
-      setIsAddNewProductOpen(false);
-      setIsProductActive(true);
-      setProductImage(null);
-      setProductName('');
-      setProductDescription('');
-      setSelectedCategories([]);
-      setVariants([]);
+    dispatch(asyncCreateProduct(formData)).then((isSuccess) => {
+      if (isSuccess) {
+        setIsAddNewProductOpen(false);
+        setIsProductActive(true);
+        setProductImage(null);
+        setProductName('');
+        setProductDescription('');
+        setSelectedCategories([]);
+        setVariants([]);
+      }
     });
   };
 
