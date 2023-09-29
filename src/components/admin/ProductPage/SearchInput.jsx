@@ -2,11 +2,13 @@ import { TextField } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { asyncReceiveProducts } from '../../../states/products/action';
+import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 
-function SearchInput({ searchParams, updateQueryParams }) {
+function SearchInput() {
   const dispatch = useDispatch();
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
 
-  const handleOnSearch = () => {
+  const handleSearch = () => {
     dispatch(
       asyncReceiveProducts({
         name: searchParams.get('name'),
@@ -22,7 +24,7 @@ function SearchInput({ searchParams, updateQueryParams }) {
 
   useEffect(() => {
     // debounce
-    const timerId = setTimeout(handleOnSearch, 300);
+    const timerId = setTimeout(handleSearch, 300);
     return () => clearTimeout(timerId);
   }, [searchParams.get('name')]);
 

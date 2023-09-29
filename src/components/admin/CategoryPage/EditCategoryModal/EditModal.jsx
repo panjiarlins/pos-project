@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Button,
@@ -12,35 +12,25 @@ import { useSingleFileInput, useValueInput } from '../../../../hooks';
 import DetailsInput from './DetailsInput';
 import { asyncEditCategory } from '../../../../states/categories/action';
 
-function EditModal({
-  categoryData,
-  isEditModalOpen,
-  setIsEditModalOpen,
-  handleOnReload,
-}) {
+function EditModal({ categoryData, isEditModalOpen, setIsEditModalOpen }) {
   const dispatch = useDispatch();
-  const [categoryId, setCategoryId] = useState();
   const [name, handleNameChange, setName] = useValueInput('');
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
 
   useEffect(() => {
-    setCategoryId(categoryData.id);
     setName(categoryData.name || '');
     setImage(null);
   }, [categoryData]);
 
-  const handleOnSave = () => {
+  const handleSave = () => {
     const formData = new FormData();
-    formData.append('name', name);
     if (image) formData.append('image', image);
-    dispatch(asyncEditCategory(categoryId, formData))
-      .then(() => {
-        handleOnReload();
-        setIsEditModalOpen(false);
-        setName('');
-        setImage(null);
-      })
-      .catch((error) => console.log(error));
+    formData.append('name', name);
+    dispatch(asyncEditCategory({ categoryId: categoryData.id, formData })).then(
+      (isSuccess) => {
+        if (isSuccess) setIsEditModalOpen(false);
+      }
+    );
   };
 
   return (
@@ -62,7 +52,7 @@ function EditModal({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={handleOnSave}>
+        <Button color="error" variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

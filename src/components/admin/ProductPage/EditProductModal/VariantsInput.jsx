@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 function VariantsInput({ variants, setVariants }) {
-  const handleVariantOnAdd = () => {
+  const handleVariantAdd = () => {
     setVariants((prevState) => {
       const newState = [...prevState];
       newState.push({
@@ -30,7 +30,7 @@ function VariantsInput({ variants, setVariants }) {
     });
   };
 
-  const handleVariantOnChange = (index, field, value) => {
+  const handleVariantChange = (index, field, value) => {
     setVariants((prevState) => {
       const newVariants = [...prevState];
       newVariants[index][field] = value;
@@ -38,7 +38,7 @@ function VariantsInput({ variants, setVariants }) {
     });
   };
 
-  const handleVariantOnDelete = (index) => {
+  const handleVariantDelete = (index) => {
     setVariants((prevState) => {
       const newVariants = [...prevState];
       newVariants.splice(index, 1);
@@ -66,7 +66,7 @@ function VariantsInput({ variants, setVariants }) {
                   fullWidth
                   value={variant.name}
                   onChange={({ target }) =>
-                    handleVariantOnChange(index, 'name', target.value)
+                    handleVariantChange(index, 'name', target.value)
                   }
                 />
                 <TextField
@@ -88,7 +88,7 @@ function VariantsInput({ variants, setVariants }) {
                   fullWidth
                   value={variant.price}
                   onChange={({ target }) =>
-                    handleVariantOnChange(index, 'price', +target.value)
+                    handleVariantChange(index, 'price', +target.value)
                   }
                 />
                 <TextField
@@ -110,7 +110,7 @@ function VariantsInput({ variants, setVariants }) {
                   fullWidth
                   value={variant.stock}
                   onChange={({ target }) =>
-                    handleVariantOnChange(index, 'stock', +target.value)
+                    handleVariantChange(index, 'stock', +target.value)
                   }
                 />
                 <Box display="flex" justifyContent="center">
@@ -118,7 +118,7 @@ function VariantsInput({ variants, setVariants }) {
                     <IconButton
                       color="error"
                       size="large"
-                      onClick={() => handleVariantOnDelete(index)}
+                      onClick={() => handleVariantDelete(index)}
                     >
                       <DeleteRounded />
                     </IconButton>
@@ -131,7 +131,7 @@ function VariantsInput({ variants, setVariants }) {
       </Box>
       <Box display="flex" justifyContent="center">
         <Tooltip title="Add variant" arrow>
-          <IconButton color="error" size="large" onClick={handleVariantOnAdd}>
+          <IconButton color="error" size="large" onClick={handleVariantAdd}>
             <AddCircleRounded color="error" fontSize="large" />
           </IconButton>
         </Tooltip>

@@ -1,6 +1,9 @@
 import { Box, MenuItem, TextField } from '@mui/material';
+import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 
-function SelectSortBy({ searchParams, updateQueryParams }) {
+function SelectSortBy() {
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
+
   return (
     <Box>
       <TextField

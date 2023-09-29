@@ -7,31 +7,32 @@ import {
   DialogTitle,
   Stack,
 } from '@mui/material';
+import { useSearchParams } from 'react-router-dom';
 import { useSingleFileInput, useValueInput } from '../../../../hooks';
-import { asyncCreateCategory } from '../../../../states/categories/action';
+import {
+  asyncCreateCategory,
+  asyncReceiveCategories,
+} from '../../../../states/categories/action';
 import DetailsInput from './DetailsInput';
 
-function CreateModal({
-  isCreateModalOpen,
-  setIsCreateModalOpen,
-  handleOnReload,
-}) {
+function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
   const [name, handleNameChange, setName] = useValueInput('');
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
 
-  const handleOnSave = () => {
+  const handleSave = () => {
     const formData = new FormData();
+    if (image) formData.append('image', image);
     formData.append('name', name);
-    formData.append('image', image);
-    dispatch(asyncCreateCategory(formData))
-      .then(() => {
-        handleOnReload();
+    dispatch(asyncCreateCategory(formData)).then((isSuccess) => {
+      if (isSuccess) {
+        dispatch(asyncReceiveCategories({ name: searchParams.get('name') }));
         setIsCreateModalOpen(false);
         setName('');
         setImage(null);
-      })
-      .catch((error) => console.log(error));
+      }
+    });
   };
 
   return (
@@ -53,7 +54,7 @@ function CreateModal({
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={handleOnSave}>
+        <Button color="error" variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

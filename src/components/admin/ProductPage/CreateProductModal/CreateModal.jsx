@@ -8,7 +8,11 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { asyncCreateProduct } from '../../../../states/products/action';
+import { useSearchParams } from 'react-router-dom';
+import {
+  asyncCreateProduct,
+  asyncReceiveProducts,
+} from '../../../../states/products/action';
 import {
   useMuiNewValue,
   useSingleFileInput,
@@ -21,6 +25,7 @@ import VariantsInput from './VariantsInput';
 
 function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
   const [isActive, handleIsActiveChange, setIsActive] = useMuiNewValue(true);
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
   const [name, handleNameChange, setName] = useValueInput('');
@@ -33,7 +38,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
     setSelectedCategories,
   ] = useCheckBoxList([]);
 
-  const handleOnSave = () => {
+  const handleSave = () => {
     const formData = new FormData();
     if (image) formData.append('image', image);
     formData.append('isActive', isActive);
@@ -52,6 +57,17 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
     );
     dispatch(asyncCreateProduct(formData)).then((isSuccess) => {
       if (isSuccess) {
+        dispatch(
+          asyncReceiveProducts({
+            name: searchParams.get('name'),
+            categoryId: searchParams.get('currCategoryId'),
+            sortBy: searchParams.get('sortBy'),
+            orderBy: searchParams.get('orderBy'),
+            isPaginated: searchParams.get('isPaginated'),
+            page: searchParams.get('page'),
+            perPage: searchParams.get('perPage'),
+          })
+        );
         setIsCreateModalOpen(false);
         setIsActive(true);
         setImage(null);
@@ -90,7 +106,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={handleOnSave}>
+        <Button color="error" variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

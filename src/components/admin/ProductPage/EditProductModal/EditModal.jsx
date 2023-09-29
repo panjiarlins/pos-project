@@ -44,7 +44,7 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
     );
   }, [productData]);
 
-  const handleOnSave = () => {
+  const handleSave = () => {
     const formData = new FormData();
     if (image) formData.append('image', image);
     formData.append('isActive', status);
@@ -64,9 +64,7 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
     );
     dispatch(asyncEditProduct({ productId: productData.id, formData })).then(
       (isSuccess) => {
-        if (isSuccess) {
-          setIsEditModalOpen(false);
-        }
+        if (isSuccess) setIsEditModalOpen(false);
       }
     );
   };
@@ -96,7 +94,7 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={handleOnSave}>
+        <Button color="error" variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>
