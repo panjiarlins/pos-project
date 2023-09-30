@@ -87,10 +87,7 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
     );
     dispatch(asyncEditProduct({ productId: productData.id, formData })).then(
       (isSuccess) => {
-        if (isSuccess) {
-          setIsEditModalOpen(false);
-          if (image && imageURL) URL.revokeObjectURL(imageURL);
-        }
+        if (isSuccess) setIsEditModalOpen(false);
       }
     );
   };
