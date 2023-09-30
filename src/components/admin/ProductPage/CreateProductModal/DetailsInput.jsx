@@ -1,7 +1,7 @@
 import { Avatar, Stack, Switch, TextField, Typography } from '@mui/material';
 
 function DetailsInput({
-  imagePreview,
+  imageURL,
   image,
   handleImageChange,
   isActive,
@@ -35,7 +35,7 @@ function DetailsInput({
           <Avatar
             component="label"
             htmlFor="image_create-product"
-            src={imagePreview}
+            src={imageURL}
             alt={image?.name || name}
             variant="square"
             sx={{

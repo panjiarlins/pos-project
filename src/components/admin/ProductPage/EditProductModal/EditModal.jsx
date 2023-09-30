@@ -22,7 +22,7 @@ import VariantsInput from './VariantsInput';
 function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
   const dispatch = useDispatch();
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imageURL, setImageURL] = useState('');
   const [isActive, handleIsActiveChange, setIsActive] = useMuiNewValue(true);
   const [name, handleNameChange, setName] = useValueInput('');
   const [variants, setVariants] = useState([]);
@@ -35,11 +35,13 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
   ] = useCheckBoxList([]);
 
   useEffect(() => {
+    if (image && imageURL) URL.revokeObjectURL(imageURL);
+    setImageURL(
+      productData.id
+        ? `${import.meta.env.VITE_API_URL}/products/image/${productData.id}`
+        : ''
+    );
     setImage(null);
-    if (productData.id)
-      setImagePreview(
-        `${import.meta.env.VITE_API_URL}/products/image/${productData.id}`
-      );
     setIsActive(
       productData.isActive === undefined ? true : productData.isActive
     );
@@ -51,15 +53,15 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
         ? JSON.parse(JSON.stringify(productData.Variants))
         : []
     );
-  }, [productData]);
+  }, [productData, isEditModalOpen]);
 
   useEffect(() => {
     if (image) {
-      if (imagePreview) {
+      if (imageURL) {
         // Release the object URL when it's no longer needed to free up resources
-        URL.revokeObjectURL(imagePreview);
+        URL.revokeObjectURL(imageURL);
       }
-      setImagePreview(URL.createObjectURL(image));
+      setImageURL(URL.createObjectURL(image));
     }
   }, [image]);
 
@@ -87,25 +89,24 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
       (isSuccess) => {
         if (isSuccess) {
           setIsEditModalOpen(false);
-          if (image && imagePreview) URL.revokeObjectURL(imagePreview);
+          if (image && imageURL) URL.revokeObjectURL(imageURL);
         }
       }
     );
   };
 
-  const handleClose = () => {
-    if (image && imagePreview) URL.revokeObjectURL(imagePreview);
-    setIsEditModalOpen(false);
-  };
-
   return (
-    <Dialog fullWidth open={isEditModalOpen} onClose={handleClose}>
+    <Dialog
+      fullWidth
+      open={isEditModalOpen}
+      onClose={() => setIsEditModalOpen(false)}
+    >
       <DialogTitle>Edit Product</DialogTitle>
       <DialogContent>
         <Stack spacing={4}>
           <DetailsInput
             {...{
-              imagePreview,
+              imageURL,
               image,
               handleImageChange,
               isActive,

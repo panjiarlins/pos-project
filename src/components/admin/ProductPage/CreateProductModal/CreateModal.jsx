@@ -28,7 +28,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const [searchParams] = useSearchParams();
   const [isActive, handleIsActiveChange, setIsActive] = useMuiNewValue(true);
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
-  const [imagePreview, setImagePreview] = useState('');
+  const [imageURL, setImageURL] = useState('');
   const [name, handleNameChange, setName] = useValueInput('');
   const [variants, setVariants] = useState([]);
   const [description, handleDescriptionChange, setDescription] =
@@ -53,8 +53,8 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   );
 
   useEffect(() => {
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
-    setImagePreview(image ? URL.createObjectURL(image) : '');
+    if (imageURL) URL.revokeObjectURL(imageURL);
+    setImageURL(image ? URL.createObjectURL(image) : '');
   }, [image]);
 
   const handleSave = () => {
@@ -103,7 +103,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
         <Stack spacing={4}>
           <DetailsInput
             {...{
-              imagePreview,
+              imageURL,
               image,
               handleImageChange,
               isActive,
