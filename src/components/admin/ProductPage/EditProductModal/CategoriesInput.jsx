@@ -11,18 +11,20 @@ import {
 import { useSelector } from 'react-redux';
 
 function CategoriesInput({
-  categories: selectedCategories,
-  handleCategoriesChange,
+  selectedCategories,
+  handleSelectedCategoriesChange,
 }) {
   const categories = useSelector((states) => states.categories);
 
   return (
     <Stack>
-      <Typography variant="h6">Select Category</Typography>
+      <Typography variant="h6">Select Product Category</Typography>
       <List>
         {categories.map((category) => (
           <ListItem key={category.id} disablePadding>
-            <ListItemButton onClick={() => handleCategoriesChange(category.id)}>
+            <ListItemButton
+              onClick={() => handleSelectedCategoriesChange(category.id)}
+            >
               <ListItemIcon>
                 <Checkbox
                   edge="start"

@@ -7,7 +7,7 @@ import {
   Stack,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   asyncCreateProduct,
@@ -28,6 +28,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const [searchParams] = useSearchParams();
   const [isActive, handleIsActiveChange, setIsActive] = useMuiNewValue(true);
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [name, handleNameChange, setName] = useValueInput('');
   const [variants, setVariants] = useState([]);
   const [description, handleDescriptionChange, setDescription] =
@@ -37,6 +38,24 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
     handleSelectedCategoriesChange,
     setSelectedCategories,
   ] = useCheckBoxList([]);
+
+  useEffect(
+    // cleanup function
+    () => () => {
+      setIsActive(true);
+      setImage(null);
+      setName('');
+      setVariants([]);
+      setDescription('');
+      setSelectedCategories([]);
+    },
+    [isCreateModalOpen]
+  );
+
+  useEffect(() => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImagePreview(image ? URL.createObjectURL(image) : '');
+  }, [image]);
 
   const handleSave = () => {
     const formData = new FormData();
@@ -69,12 +88,6 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
           })
         );
         setIsCreateModalOpen(false);
-        setIsActive(true);
-        setImage(null);
-        setName('');
-        setDescription('');
-        setSelectedCategories([]);
-        setVariants([]);
       }
     });
   };
@@ -90,6 +103,8 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
         <Stack spacing={4}>
           <DetailsInput
             {...{
+              imagePreview,
+              image,
               handleImageChange,
               isActive,
               handleIsActiveChange,

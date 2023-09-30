@@ -1,6 +1,8 @@
-import { Stack, Switch, TextField, Typography } from '@mui/material';
+import { Avatar, Stack, Switch, TextField, Typography } from '@mui/material';
 
 function DetailsInput({
+  imagePreview,
+  image,
   handleImageChange,
   isActive,
   handleIsActiveChange,
@@ -12,7 +14,7 @@ function DetailsInput({
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Product Details</Typography>
-      <Stack spacing={1.5}>
+      <Stack spacing={3}>
         <Stack direction="row" alignItems="center" spacing={2}>
           <Typography>Product status</Typography>
           <Switch
@@ -29,15 +31,27 @@ function DetailsInput({
           />
         </Stack>
         <Stack spacing={0.5}>
-          <label htmlFor="new-product-image" className="cursor-pointer">
-            <Typography>Product image</Typography>
-          </label>
+          <Typography>Product image</Typography>
+          <Avatar
+            component="label"
+            htmlFor="image_create-product"
+            src={imagePreview}
+            alt={image?.name || name}
+            variant="square"
+            sx={{
+              width: '10rem',
+              height: '10rem',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 },
+            }}
+          />
           <input
-            className="cursor-pointer"
-            id="new-product-image"
+            id="image_create-product"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
+            required
+            hidden
           />
         </Stack>
         <TextField
@@ -54,7 +68,7 @@ function DetailsInput({
           required
           color="info"
           size="small"
-          label="Description"
+          label="Product Description"
           variant="outlined"
           fullWidth
           multiline

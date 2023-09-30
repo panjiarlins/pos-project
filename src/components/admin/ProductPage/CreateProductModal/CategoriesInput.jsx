@@ -18,7 +18,7 @@ function CategoriesInput({
 
   return (
     <Stack>
-      <Typography variant="h6">Select Category</Typography>
+      <Typography variant="h6">Select Product Category</Typography>
       <List>
         {categories.map((category) => (
           <ListItem key={category.id} disablePadding>
