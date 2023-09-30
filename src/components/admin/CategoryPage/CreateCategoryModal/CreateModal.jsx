@@ -8,6 +8,7 @@ import {
   Stack,
 } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useSingleFileInput, useValueInput } from '../../../../hooks';
 import {
   asyncCreateCategory,
@@ -20,6 +21,20 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const [searchParams] = useSearchParams();
   const [name, handleNameChange, setName] = useValueInput('');
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
+  const [imageURL, setImageURL] = useState('');
+
+  useEffect(
+    () => () => {
+      setImage(null);
+      setName('');
+    },
+    [isCreateModalOpen]
+  );
+
+  useEffect(() => {
+    if (imageURL) URL.revokeObjectURL(imageURL);
+    setImageURL(image ? URL.createObjectURL(image) : '');
+  }, [image]);
 
   const handleSave = () => {
     const formData = new FormData();
@@ -29,8 +44,6 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
       if (isSuccess) {
         dispatch(asyncReceiveCategories({ name: searchParams.get('name') }));
         setIsCreateModalOpen(false);
-        setName('');
-        setImage(null);
       }
     });
   };
@@ -46,6 +59,8 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
         <Stack spacing={4}>
           <DetailsInput
             {...{
+              imageURL,
+              image,
               handleImageChange,
               name,
               handleNameChange,

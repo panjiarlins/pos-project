@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Button,
@@ -16,16 +16,30 @@ function EditModal({ categoryData, isEditModalOpen, setIsEditModalOpen }) {
   const dispatch = useDispatch();
   const [name, handleNameChange, setName] = useValueInput('');
   const [image, handleImageChange, setImage] = useSingleFileInput(null);
+  const [imageURL, setImageURL] = useState('');
 
   useEffect(() => {
-    setName(categoryData.name || '');
+    if (image && imageURL) URL.revokeObjectURL(imageURL);
+    setImageURL(
+      categoryData.id
+        ? `${import.meta.env.VITE_API_URL}/categories/image/${categoryData.id}`
+        : ''
+    );
     setImage(null);
-  }, [categoryData]);
+    setName(categoryData.name || '');
+  }, [categoryData, isEditModalOpen]);
+
+  useEffect(() => {
+    if (image) {
+      if (imageURL) URL.revokeObjectURL(imageURL);
+      setImageURL(URL.createObjectURL(image));
+    }
+  }, [image]);
 
   const handleSave = () => {
     const formData = new FormData();
     if (image) formData.append('image', image);
-    formData.append('name', name);
+    if (name !== categoryData.name) formData.append('name', name);
     dispatch(asyncEditCategory({ categoryId: categoryData.id, formData })).then(
       (isSuccess) => {
         if (isSuccess) setIsEditModalOpen(false);
@@ -43,11 +57,7 @@ function EditModal({ categoryData, isEditModalOpen, setIsEditModalOpen }) {
       <DialogContent>
         <Stack spacing={4}>
           <DetailsInput
-            {...{
-              handleImageChange,
-              name,
-              handleNameChange,
-            }}
+            {...{ imageURL, image, handleImageChange, name, handleNameChange }}
           />
         </Stack>
       </DialogContent>

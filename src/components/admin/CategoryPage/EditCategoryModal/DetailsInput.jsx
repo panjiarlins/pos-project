@@ -1,10 +1,16 @@
-import { Stack, TextField, Typography } from '@mui/material';
+import { Avatar, Stack, TextField, Typography } from '@mui/material';
 
-function DetailsInput({ handleImageChange, name, handleNameChange }) {
+function DetailsInput({
+  imageURL,
+  image,
+  handleImageChange,
+  name,
+  handleNameChange,
+}) {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Category Details</Typography>
-      <Stack spacing={1.5}>
+      <Stack spacing={3}>
         <TextField
           required
           color="info"
@@ -16,15 +22,26 @@ function DetailsInput({ handleImageChange, name, handleNameChange }) {
           onChange={handleNameChange}
         />
         <Stack spacing={0.5}>
-          <label htmlFor="edit-category-image" className="cursor-pointer">
-            <Typography>Category image</Typography>
-          </label>
+          <Typography>Category image</Typography>
+          <Avatar
+            component="label"
+            htmlFor="image_edit-category"
+            src={imageURL}
+            alt={image?.name || name}
+            variant="square"
+            sx={{
+              width: '10rem',
+              height: '10rem',
+              cursor: 'pointer',
+              '&:hover': { opacity: 0.8 },
+            }}
+          />
           <input
-            className="cursor-pointer"
-            id="edit-category-image"
+            id="image_edit-category"
             type="file"
             accept="image/*"
             onChange={handleImageChange}
+            hidden
           />
         </Stack>
       </Stack>
