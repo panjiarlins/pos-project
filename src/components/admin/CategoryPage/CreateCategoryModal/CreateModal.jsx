@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { bool, func } from 'prop-types';
 import { useSingleFileInput, useValueInput } from '../../../../hooks';
 import {
   asyncCreateCategory,
@@ -60,7 +61,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
           <DetailsInput
             {...{
               imageURL,
-              image,
+              imageName: image?.name || '',
               handleImageChange,
               name,
               handleNameChange,
@@ -76,5 +77,10 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
     </Dialog>
   );
 }
+
+CreateModal.propTypes = {
+  isCreateModalOpen: bool.isRequired,
+  setIsCreateModalOpen: func.isRequired,
+};
 
 export default CreateModal;

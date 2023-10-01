@@ -1,8 +1,9 @@
 import { Avatar, Stack, TextField, Typography } from '@mui/material';
+import { func, string } from 'prop-types';
 
 function DetailsInput({
   imageURL,
-  image,
+  imageName,
   handleImageChange,
   name,
   handleNameChange,
@@ -27,7 +28,7 @@ function DetailsInput({
             component="label"
             htmlFor="image_create-category"
             src={imageURL}
-            alt={image?.name || name}
+            alt={imageName || name}
             variant="square"
             sx={{
               width: '10rem',
@@ -49,5 +50,13 @@ function DetailsInput({
     </Stack>
   );
 }
+
+DetailsInput.propTypes = {
+  imageURL: string.isRequired,
+  imageName: string.isRequired,
+  handleImageChange: func.isRequired,
+  name: string.isRequired,
+  handleNameChange: func.isRequired,
+};
 
 export default DetailsInput;

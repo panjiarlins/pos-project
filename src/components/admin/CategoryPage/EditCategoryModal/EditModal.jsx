@@ -8,6 +8,7 @@ import {
   DialogTitle,
   Stack,
 } from '@mui/material';
+import { bool, func, number, shape, string } from 'prop-types';
 import { useSingleFileInput, useValueInput } from '../../../../hooks';
 import DetailsInput from './DetailsInput';
 import { asyncEditCategory } from '../../../../states/categories/action';
@@ -57,7 +58,13 @@ function EditModal({ categoryData, isEditModalOpen, setIsEditModalOpen }) {
       <DialogContent>
         <Stack spacing={4}>
           <DetailsInput
-            {...{ imageURL, image, handleImageChange, name, handleNameChange }}
+            {...{
+              imageURL,
+              imageName: image?.name || '',
+              handleImageChange,
+              name,
+              handleNameChange,
+            }}
           />
         </Stack>
       </DialogContent>
@@ -69,5 +76,14 @@ function EditModal({ categoryData, isEditModalOpen, setIsEditModalOpen }) {
     </Dialog>
   );
 }
+
+EditModal.propTypes = {
+  categoryData: shape({
+    id: number,
+    name: string,
+  }).isRequired,
+  isEditModalOpen: bool.isRequired,
+  setIsEditModalOpen: func.isRequired,
+};
 
 export default EditModal;
