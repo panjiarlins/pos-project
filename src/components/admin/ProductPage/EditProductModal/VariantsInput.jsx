@@ -15,6 +15,15 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import {
+  arrayOf,
+  exact,
+  func,
+  number,
+  oneOfType,
+  shape,
+  string,
+} from 'prop-types';
 
 function VariantsInput({ variants, setVariants }) {
   const handleVariantAdd = () => {
@@ -139,5 +148,25 @@ function VariantsInput({ variants, setVariants }) {
     </Stack>
   );
 }
+
+VariantsInput.propTypes = {
+  variants: arrayOf(
+    oneOfType([
+      shape({
+        id: number,
+        name: string,
+        price: number,
+        stock: number,
+      }),
+      exact({
+        key: number,
+        name: string,
+        price: number,
+        stock: number,
+      }),
+    ])
+  ).isRequired,
+  setVariants: func.isRequired,
+};
 
 export default VariantsInput;

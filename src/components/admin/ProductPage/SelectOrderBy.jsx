@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, MenuItem, TextField } from '@mui/material';
 import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 

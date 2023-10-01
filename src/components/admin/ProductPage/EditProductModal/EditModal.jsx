@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+import { arrayOf, bool, func, number, shape, string } from 'prop-types';
 import {
   useMuiNewValue,
   useSingleFileInput,
@@ -104,7 +105,7 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
           <DetailsInput
             {...{
               imageURL,
-              image,
+              imageName: image?.name || '',
               handleImageChange,
               isActive,
               handleIsActiveChange,
@@ -128,5 +129,25 @@ function EditModal({ productData, isEditModalOpen, setIsEditModalOpen }) {
     </Dialog>
   );
 }
+
+EditModal.propTypes = {
+  productData: shape({
+    id: number,
+    isActive: bool,
+    name: string,
+    description: string,
+    Categories: arrayOf(shape({ id: number })),
+    Variants: arrayOf(
+      shape({
+        id: number,
+        name: string,
+        price: number,
+        stock: number,
+      })
+    ),
+  }).isRequired,
+  isEditModalOpen: bool.isRequired,
+  setIsEditModalOpen: func.isRequired,
+};
 
 export default EditModal;

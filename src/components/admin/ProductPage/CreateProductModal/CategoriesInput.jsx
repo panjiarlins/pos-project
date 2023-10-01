@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { arrayOf, func, number } from 'prop-types';
 import { useSelector } from 'react-redux';
 
 function CategoriesInput({
@@ -42,5 +43,10 @@ function CategoriesInput({
     </Stack>
   );
 }
+
+CategoriesInput.propTypes = {
+  selectedCategories: arrayOf(number).isRequired,
+  handleSelectedCategoriesChange: func.isRequired,
+};
 
 export default CategoriesInput;

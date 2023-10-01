@@ -9,6 +9,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { bool, func } from 'prop-types';
 import {
   asyncCreateProduct,
   asyncReceiveProducts,
@@ -104,7 +105,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
           <DetailsInput
             {...{
               imageURL,
-              image,
+              imageName: image?.name || '',
               handleImageChange,
               isActive,
               handleIsActiveChange,
@@ -128,5 +129,10 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
     </Dialog>
   );
 }
+
+CreateModal.propTypes = {
+  isCreateModalOpen: bool.isRequired,
+  setIsCreateModalOpen: func.isRequired,
+};
 
 export default CreateModal;

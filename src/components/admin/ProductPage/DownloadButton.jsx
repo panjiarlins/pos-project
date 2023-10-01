@@ -1,6 +1,5 @@
 import { DownloadRounded } from '@mui/icons-material';
 import { Button, Tooltip } from '@mui/material';
-import React from 'react';
 
 function DownloadButton() {
   return (
