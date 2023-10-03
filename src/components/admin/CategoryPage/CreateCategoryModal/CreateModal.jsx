@@ -5,12 +5,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
 } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import { bool, func } from 'prop-types';
-import { useSingleFileInput, useValueInput } from '../../../../hooks';
+import { Form, Formik } from 'formik';
+import * as Yup from 'yup';
 import {
   asyncCreateCategory,
   asyncReceiveCategories,
@@ -20,30 +19,37 @@ import DetailsInput from './DetailsInput';
 function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
-  const [name, handleNameChange, setName] = useValueInput('');
-  const [image, handleImageChange, setImage] = useSingleFileInput(null);
-  const [imageURL, setImageURL] = useState('');
 
-  useEffect(
-    () => () => {
-      setImage(null);
-      setName('');
-    },
-    [isCreateModalOpen]
-  );
+  const initialValues = {
+    name: '',
+    image: null,
+    imageURL: '',
+  };
 
-  useEffect(() => {
-    if (imageURL) URL.revokeObjectURL(imageURL);
-    setImageURL(image ? URL.createObjectURL(image) : '');
-  }, [image]);
+  const validationSchema = Yup.object({
+    name: Yup.string().required(),
+    image: Yup.mixed()
+      .required()
+      .test('is-file', 'Image must be a file', (value) => value instanceof File)
+      .test('is-image', 'File must be an image', (value) =>
+        value.type.startsWith('image/')
+      )
+      .test(
+        'file-size',
+        'File size must be ≤ 1MB',
+        (value) => value.size <= 1024 * 1024 // 1MB = 1024 * 1024 bytes
+      ),
+  });
 
-  const handleSave = () => {
+  const onSubmit = (values, { resetForm }) => {
     const formData = new FormData();
-    if (image) formData.append('image', image);
-    formData.append('name', name);
+    formData.append('name', values.name);
+    formData.append('image', values.image);
     dispatch(asyncCreateCategory(formData)).then((isSuccess) => {
       if (isSuccess) {
         dispatch(asyncReceiveCategories({ name: searchParams.get('name') }));
+        URL.revokeObjectURL(values.imageURL);
+        resetForm();
         setIsCreateModalOpen(false);
       }
     });
@@ -55,25 +61,30 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
       open={isCreateModalOpen}
       onClose={() => setIsCreateModalOpen(false)}
     >
-      <DialogTitle>New Category</DialogTitle>
-      <DialogContent>
-        <Stack spacing={4}>
-          <DetailsInput
-            {...{
-              imageURL,
-              imageName: image?.name || '',
-              handleImageChange,
-              name,
-              handleNameChange,
-            }}
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" variant="contained" onClick={handleSave}>
-          Save
-        </Button>
-      </DialogActions>
+      <Formik
+        validateOnMount
+        {...{ initialValues, validationSchema, onSubmit }}
+      >
+        {(formik) => (
+          <Form>
+            {console.log(1, formik)}
+            <DialogTitle>New Category</DialogTitle>
+            <DialogContent>
+              <DetailsInput />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                type="submit"
+                color="error"
+                variant="contained"
+                disabled={!formik.isValid}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Form>
+        )}
+      </Formik>
     </Dialog>
   );
 }
