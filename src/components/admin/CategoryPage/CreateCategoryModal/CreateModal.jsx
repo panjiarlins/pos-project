@@ -9,7 +9,7 @@ import {
 import { useSearchParams } from 'react-router-dom';
 import { bool, func } from 'prop-types';
 import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
+import { mixed, string, object } from 'yup';
 import {
   asyncCreateCategory,
   asyncReceiveCategories,
@@ -26,9 +26,9 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
     imageURL: '',
   };
 
-  const validationSchema = Yup.object({
-    name: Yup.string().required(),
-    image: Yup.mixed()
+  const validationSchema = object({
+    name: string().required(),
+    image: mixed()
       .required()
       .test('is-file', 'Image must be a file', (value) => value instanceof File)
       .test('is-image', 'File must be an image', (value) =>
@@ -67,7 +67,6 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
       >
         {(formik) => (
           <Form>
-            {console.log(1, formik)}
             <DialogTitle>New Category</DialogTitle>
             <DialogContent>
               <DetailsInput />
@@ -77,7 +76,7 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
                 type="submit"
                 color="error"
                 variant="contained"
-                disabled={!formik.isValid}
+                disabled={!formik.isValid || !formik.dirty}
               >
                 Save
               </Button>

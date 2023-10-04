@@ -75,7 +75,7 @@ function DetailsInput() {
                 aria-label="Category image"
                 aria-describedby="image_helper-text"
                 onChange={async ({ target }) => {
-                  await form.setFieldValue('image', target.files[0]); // Set image
+                  await form.setFieldValue('image', target.files[0] || null); // Set image
                   URL.revokeObjectURL(form.values.imageURL); // Release the object URL when no longer needed to free up resources
                   await form.setFieldValue(
                     'imageURL', // imageURL for image preview
