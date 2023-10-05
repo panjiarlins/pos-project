@@ -8,149 +8,171 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  FormControl,
+  FormHelperText,
   IconButton,
   InputAdornment,
+  InputLabel,
+  OutlinedInput,
   Stack,
-  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { arrayOf, exact, func, number, string } from 'prop-types';
+import { Field, FieldArray } from 'formik';
 
-function VariantsInput({ variants, setVariants }) {
-  const handleVariantAdd = () => {
-    setVariants((prevState) => {
-      const newState = [...prevState];
-      newState.push({
-        key: Math.random(),
-        name: `Variant ${prevState.length + 1}`,
-        price: 1,
-        stock: 1,
-      });
-      return newState;
-    });
-  };
-
-  const handleVariantChange = (index, field, value) => {
-    setVariants((prevState) => {
-      const newVariants = [...prevState];
-      newVariants[index][field] = value;
-      return newVariants;
-    });
-  };
-
-  const handleVariantDelete = (index) => {
-    setVariants((prevState) => {
-      const newVariants = [...prevState];
-      newVariants.splice(index, 1);
-      return newVariants;
-    });
-  };
-
+function VariantsInput() {
   return (
-    <Stack spacing={2}>
-      <Typography variant="h6">Product Variants</Typography>
-      <Box>
-        {variants.map((variant, index) => (
-          <Accordion key={variant.key}>
-            <AccordionSummary expandIcon={<ExpandMoreRounded />}>
-              <Typography>{variant.name}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stack direction="column" spacing={2}>
-                <TextField
-                  required
-                  color="info"
-                  size="small"
-                  label="Name"
-                  variant="outlined"
-                  fullWidth
-                  value={variant.name}
-                  onChange={({ target }) =>
-                    handleVariantChange(index, 'name', target.value)
-                  }
-                />
-                <TextField
-                  required
-                  type="number"
-                  color="info"
-                  size="small"
-                  label="Price"
-                  variant="outlined"
-                  InputProps={{
-                    inputProps: {
-                      min: 0,
-                      step: 1,
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">Rp</InputAdornment>
-                    ),
-                  }}
-                  fullWidth
-                  value={variant.price}
-                  onChange={({ target }) =>
-                    handleVariantChange(index, 'price', +target.value)
-                  }
-                />
-                <TextField
-                  required
-                  type="number"
-                  color="info"
-                  size="small"
-                  label="Stock"
-                  variant="outlined"
-                  InputProps={{
-                    inputProps: {
-                      min: 0,
-                      step: 1,
-                    },
-                    startAdornment: (
-                      <InputAdornment position="start">📦</InputAdornment>
-                    ),
-                  }}
-                  fullWidth
-                  value={variant.stock}
-                  onChange={({ target }) =>
-                    handleVariantChange(index, 'stock', +target.value)
-                  }
-                />
-                <Box display="flex" justifyContent="center">
-                  <Tooltip title="Delete variant" placement="right" arrow>
-                    <IconButton
-                      color="error"
-                      size="large"
-                      onClick={() => handleVariantDelete(index)}
-                    >
-                      <DeleteRounded />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </Box>
-      <Box display="flex" justifyContent="center">
-        <Tooltip title="Add variant" arrow>
-          <IconButton color="error" size="large" onClick={handleVariantAdd}>
-            <AddCircleRounded color="error" fontSize="large" />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    </Stack>
+    <FieldArray name="variants">
+      {({ form, name, remove, push }) => (
+        <Stack spacing={2} component="fieldset">
+          <Typography variant="h6" component="legend">
+            Product Variants
+          </Typography>
+          <Box>
+            {form.values[name].map((variant, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Accordion key={index}>
+                <AccordionSummary expandIcon={<ExpandMoreRounded />}>
+                  <Typography>{variant.name}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack direction="column" spacing={2}>
+                    {/* Product variant name input */}
+                    <Field name={`variants[${index}].name`}>
+                      {({ field, meta }) => (
+                        <FormControl
+                          fullWidth
+                          required
+                          variant="outlined"
+                          size="small"
+                          error={meta.touched && !!meta.error}
+                        >
+                          <InputLabel htmlFor="variant-name_input">
+                            Variant name
+                          </InputLabel>
+                          <OutlinedInput
+                            id="variant-name_input"
+                            type="text"
+                            label="Variant name"
+                            inputProps={{ 'aria-label': 'Variant name' }}
+                            aria-describedby="variant-name_helper-text"
+                            {...field}
+                          />
+                          <FormHelperText id="variant-name_helper-text">
+                            {meta.touched ? meta.error || ' ' : ' '}
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    {/* Product variant price input */}
+                    <Field name={`variants[${index}].price`}>
+                      {({ field, meta }) => (
+                        <FormControl
+                          fullWidth
+                          required
+                          variant="outlined"
+                          size="small"
+                          error={meta.touched && !!meta.error}
+                        >
+                          <InputLabel htmlFor="variant-price_input">
+                            Variant price
+                          </InputLabel>
+                          <OutlinedInput
+                            id="variant-price_input"
+                            type="number"
+                            label="Variant price"
+                            aria-describedby="variant-price_helper-text"
+                            inputProps={{
+                              min: 0,
+                              step: 1,
+                              'aria-label': 'Variant price',
+                            }}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                Rp
+                              </InputAdornment>
+                            }
+                            {...field}
+                          />
+                          <FormHelperText id="variant-price_helper-text">
+                            {meta.touched ? meta.error || ' ' : ' '}
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    {/* Product variant stock input */}
+                    <Field name={`variants[${index}].stock`}>
+                      {({ field, meta }) => (
+                        <FormControl
+                          fullWidth
+                          required
+                          variant="outlined"
+                          size="small"
+                          error={meta.touched && !!meta.error}
+                        >
+                          <InputLabel htmlFor="variant-stock_input">
+                            Variant stock
+                          </InputLabel>
+                          <OutlinedInput
+                            id="variant-stock_input"
+                            type="number"
+                            label="Variant stock"
+                            aria-describedby="variant-stock_helper-text"
+                            inputProps={{
+                              min: 0,
+                              step: 1,
+                              'aria-label': 'Variant stock',
+                            }}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                📦
+                              </InputAdornment>
+                            }
+                            {...field}
+                          />
+                          <FormHelperText id="variant-stock_helper-text">
+                            {meta.touched ? meta.error || ' ' : ' '}
+                          </FormHelperText>
+                        </FormControl>
+                      )}
+                    </Field>
+
+                    {/* Delete button */}
+                    <Box display="flex" justifyContent="center">
+                      <Tooltip title="Delete variant" placement="right" arrow>
+                        <IconButton
+                          color="error"
+                          size="large"
+                          onClick={() => remove(index)}
+                        >
+                          <DeleteRounded />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
+            ))}
+          </Box>
+
+          {/* Add button */}
+          <Box display="flex" justifyContent="center">
+            <Tooltip title="Add variant" arrow>
+              <IconButton
+                color="error"
+                size="large"
+                onClick={() => push({ name: '', price: 0, stock: 0 })}
+              >
+                <AddCircleRounded color="error" fontSize="large" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Stack>
+      )}
+    </FieldArray>
   );
 }
-
-VariantsInput.propTypes = {
-  variants: arrayOf(
-    exact({
-      key: number,
-      name: string,
-      price: number,
-      stock: number,
-    })
-  ).isRequired,
-  setVariants: func.isRequired,
-};
 
 export default VariantsInput;

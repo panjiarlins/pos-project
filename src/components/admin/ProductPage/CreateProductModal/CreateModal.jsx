@@ -7,19 +7,14 @@ import {
   Stack,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { bool, func } from 'prop-types';
+import { Form, Formik } from 'formik';
+import { array, boolean, mixed, number, object, string } from 'yup';
 import {
   asyncCreateProduct,
   asyncReceiveProducts,
 } from '../../../../states/products/action';
-import {
-  useMuiNewValue,
-  useSingleFileInput,
-  useCheckBoxList,
-  useValueInput,
-} from '../../../../hooks';
 import DetailsInput from './DetailsInput';
 import CategoriesInput from './CategoriesInput';
 import VariantsInput from './VariantsInput';
@@ -27,54 +22,54 @@ import VariantsInput from './VariantsInput';
 function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
-  const [isActive, handleIsActiveChange, setIsActive] = useMuiNewValue(true);
-  const [image, handleImageChange, setImage] = useSingleFileInput(null);
-  const [imageURL, setImageURL] = useState('');
-  const [name, handleNameChange, setName] = useValueInput('');
-  const [variants, setVariants] = useState([]);
-  const [description, handleDescriptionChange, setDescription] =
-    useValueInput('');
-  const [
-    selectedCategories,
-    handleSelectedCategoriesChange,
-    setSelectedCategories,
-  ] = useCheckBoxList([]);
 
-  useEffect(
-    // cleanup function
-    () => () => {
-      setIsActive(true);
-      setImage(null);
-      setName('');
-      setVariants([]);
-      setDescription('');
-      setSelectedCategories([]);
-    },
-    [isCreateModalOpen]
-  );
+  const initialTouched = {
+    isActive: true,
+  };
 
-  useEffect(() => {
-    if (imageURL) URL.revokeObjectURL(imageURL);
-    setImageURL(image ? URL.createObjectURL(image) : '');
-  }, [image]);
+  const initialValues = {
+    name: '',
+    isActive: true,
+    image: null,
+    imageURL: '',
+    description: '',
+    selectedCategories: [],
+    variants: [],
+  };
 
-  const handleSave = () => {
-    const formData = new FormData();
-    if (image) formData.append('image', image);
-    formData.append('isActive', isActive);
-    formData.append('name', name);
-    formData.append('description', description);
-    formData.append('categoryId', JSON.stringify(selectedCategories));
-    formData.append(
-      'variants',
-      JSON.stringify(
-        variants.map((variant) => ({
-          name: variant.name,
-          price: variant.price,
-          stock: variant.stock,
-        }))
+  const validationSchema = object({
+    name: string().required(),
+    isActive: boolean().required(),
+    image: mixed()
+      .required()
+      .test('is-file', 'Image must be a file', (value) => value instanceof File)
+      .test('is-image', 'File must be an image', (value) =>
+        value.type.startsWith('image/')
       )
-    );
+      .test(
+        'file-size',
+        'File size must be ≤ 1MB',
+        (value) => value.size <= 1024 * 1024 // 1MB = 1024 * 1024 bytes
+      ),
+    description: string().required(),
+    selectedCategories: array().of(number().integer().min(1)),
+    variants: array().of(
+      object({
+        name: string().required(),
+        price: number().integer().min(0).required(),
+        stock: number().integer().min(0).required(),
+      })
+    ),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    const formData = new FormData();
+    formData.append('image', values.image);
+    formData.append('isActive', values.isActive);
+    formData.append('name', values.name);
+    formData.append('description', values.description);
+    formData.append('categoryId', JSON.stringify(values.selectedCategories));
+    formData.append('variants', JSON.stringify(values.variants));
     dispatch(asyncCreateProduct(formData)).then((isSuccess) => {
       if (isSuccess) {
         dispatch(
@@ -88,6 +83,8 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
             perPage: searchParams.get('perPage'),
           })
         );
+        URL.revokeObjectURL(values.imageURL);
+        resetForm();
         setIsCreateModalOpen(false);
       }
     });
@@ -99,33 +96,33 @@ function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
       open={isCreateModalOpen}
       onClose={() => setIsCreateModalOpen(false)}
     >
-      <DialogTitle>New Product</DialogTitle>
-      <DialogContent>
-        <Stack spacing={4}>
-          <DetailsInput
-            {...{
-              imageURL,
-              imageName: image?.name || '',
-              handleImageChange,
-              isActive,
-              handleIsActiveChange,
-              name,
-              handleNameChange,
-              description,
-              handleDescriptionChange,
-            }}
-          />
-          <CategoriesInput
-            {...{ selectedCategories, handleSelectedCategoriesChange }}
-          />
-          <VariantsInput {...{ variants, setVariants }} />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" variant="contained" onClick={handleSave}>
-          Save
-        </Button>
-      </DialogActions>
+      <Formik
+        validateOnMount
+        {...{ initialTouched, initialValues, validationSchema, onSubmit }}
+      >
+        {(formik) => (
+          <Form>
+            <DialogTitle>New Product</DialogTitle>
+            <DialogContent>
+              <Stack spacing={4}>
+                <DetailsInput />
+                <CategoriesInput />
+                <VariantsInput />
+              </Stack>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                type="submit"
+                color="error"
+                variant="contained"
+                disabled={!formik.isValid || !formik.dirty}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Form>
+        )}
+      </Formik>
     </Dialog>
   );
 }
