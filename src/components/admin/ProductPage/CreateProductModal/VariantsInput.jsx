@@ -47,18 +47,22 @@ function VariantsInput() {
                           size="small"
                           error={meta.touched && !!meta.error}
                         >
-                          <InputLabel htmlFor="variant-name_input">
+                          <InputLabel htmlFor={`variant[${index}]-name_input`}>
                             Variant name
                           </InputLabel>
                           <OutlinedInput
-                            id="variant-name_input"
+                            id={`variant[${index}]-name_input`}
                             type="text"
                             label="Variant name"
-                            inputProps={{ 'aria-label': 'Variant name' }}
-                            aria-describedby="variant-name_helper-text"
+                            inputProps={{
+                              'aria-label': `Variant[${index}] name`,
+                            }}
+                            aria-describedby={`variant[${index}]-name_helper-text`}
                             {...field}
                           />
-                          <FormHelperText id="variant-name_helper-text">
+                          <FormHelperText
+                            id={`variant[${index}]-name_helper-text`}
+                          >
                             {meta.touched ? meta.error || ' ' : ' '}
                           </FormHelperText>
                         </FormControl>
@@ -75,18 +79,18 @@ function VariantsInput() {
                           size="small"
                           error={meta.touched && !!meta.error}
                         >
-                          <InputLabel htmlFor="variant-price_input">
+                          <InputLabel htmlFor={`variant[${index}]-price_input`}>
                             Variant price
                           </InputLabel>
                           <OutlinedInput
-                            id="variant-price_input"
+                            id={`variant[${index}]-price_input`}
                             type="number"
                             label="Variant price"
-                            aria-describedby="variant-price_helper-text"
+                            aria-describedby={`variant[${index}]-price_helper-text`}
                             inputProps={{
                               min: 0,
                               step: 1,
-                              'aria-label': 'Variant price',
+                              'aria-label': `Variant[${index}] price`,
                             }}
                             startAdornment={
                               <InputAdornment position="start">
@@ -95,7 +99,9 @@ function VariantsInput() {
                             }
                             {...field}
                           />
-                          <FormHelperText id="variant-price_helper-text">
+                          <FormHelperText
+                            id={`variant[${index}]-price_helper-text`}
+                          >
                             {meta.touched ? meta.error || ' ' : ' '}
                           </FormHelperText>
                         </FormControl>
@@ -112,18 +118,18 @@ function VariantsInput() {
                           size="small"
                           error={meta.touched && !!meta.error}
                         >
-                          <InputLabel htmlFor="variant-stock_input">
+                          <InputLabel htmlFor={`variants[${index}].stock`}>
                             Variant stock
                           </InputLabel>
                           <OutlinedInput
-                            id="variant-stock_input"
+                            id={`variants[${index}].stock`}
                             type="number"
                             label="Variant stock"
-                            aria-describedby="variant-stock_helper-text"
+                            aria-describedby={`variant[${index}]-stock_helper-text`}
                             inputProps={{
                               min: 0,
                               step: 1,
-                              'aria-label': 'Variant stock',
+                              'aria-label': `Variant[${index}] stock`,
                             }}
                             startAdornment={
                               <InputAdornment position="start">
@@ -132,7 +138,9 @@ function VariantsInput() {
                             }
                             {...field}
                           />
-                          <FormHelperText id="variant-stock_helper-text">
+                          <FormHelperText
+                            id={`variant[${index}]-stock_helper-text`}
+                          >
                             {meta.touched ? meta.error || ' ' : ' '}
                           </FormHelperText>
                         </FormControl>
