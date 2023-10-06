@@ -1,11 +1,11 @@
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
+import { useSearchParams } from 'react-router-dom';
 import { asyncReceiveProducts } from '../../states/products/action';
 import { asyncReceiveCategories } from '../../states/categories/action';
 import SelectSortBy from '../../components/admin/ProductPage/SelectSortBy';
 import SelectOrderBy from '../../components/admin/ProductPage/SelectOrderBy';
-import useCustomSearchParams from '../../hooks/useCustomSearchParams';
 import PageHeader from '../../components/admin/ProductPage/PageHeader';
 import SearchInput from '../../components/admin/ProductPage/SearchInput';
 import DownloadButton from '../../components/admin/ProductPage/DownloadButton';
@@ -14,12 +14,10 @@ import ContainerTab from '../../components/admin/ProductPage/ContainerTab';
 
 function ProductPage() {
   const dispatch = useDispatch();
-  const [searchParams, updateQueryParams] = useCustomSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    dispatch(asyncReceiveCategories({ perPage: 1000 })).catch((error) =>
-      console.log(error)
-    );
+    dispatch(asyncReceiveCategories());
     dispatch(
       asyncReceiveProducts({
         name: searchParams.get('name'),
@@ -52,7 +50,7 @@ function ProductPage() {
       <PageHeader />
       <Box>
         <Stack spacing={2} direction={{ xs: 'column', md: 'row' }}>
-          <SearchInput {...{ searchParams, updateQueryParams }} />
+          <SearchInput />
           <Box sx={{ flexGrow: 1 }} display={{ xs: 'none', md: 'inherit' }} />
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <Stack direction="row" spacing={1} justifyContent="center">
@@ -60,13 +58,13 @@ function ProductPage() {
               <CreateButton />
             </Stack>
             <Stack direction="row" spacing={1} justifyContent="center">
-              <SelectSortBy {...{ searchParams, updateQueryParams }} />
-              <SelectOrderBy {...{ searchParams, updateQueryParams }} />
+              <SelectSortBy />
+              <SelectOrderBy />
             </Stack>
           </Stack>
         </Stack>
       </Box>
-      <ContainerTab {...{ searchParams, updateQueryParams }} />
+      <ContainerTab />
     </Stack>
   );
 }

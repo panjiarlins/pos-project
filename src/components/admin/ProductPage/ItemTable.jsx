@@ -33,12 +33,12 @@ function ItemTable() {
     dispatch(asyncEditProduct({ productId: event.target.value, formData }));
   };
 
-  const handleEditButtonClick = (product) => {
+  const handleEditButton = (product) => {
     setProductData(product);
     setIsEditModalOpen(true);
   };
 
-  const handleDeleteButtonClick = (productId) => {
+  const handleDeleteButton = (productId) => {
     dispatch(asyncDeleteProduct(productId));
   };
 
@@ -73,7 +73,7 @@ function ItemTable() {
                 {product.Variants.map((variant) => (
                   <ListItem key={variant.id} divider disablePadding>
                     <ListItemText
-                      primary={`${variant.name} (${variant.stock}Pcs)`}
+                      primary={`${variant.name} (${variant.stock} pcs)`}
                       secondary={`Rp${variant.price.toLocaleString('id-ID')}`}
                     />
                   </ListItem>
@@ -106,7 +106,7 @@ function ItemTable() {
               <Stack direction="row">
                 <Tooltip title="Edit product" arrow>
                   <IconButton
-                    onClick={() => handleEditButtonClick(product)}
+                    onClick={() => handleEditButton(product)}
                     sx={{ '&:hover': { color: 'info.main' } }}
                   >
                     <EditNoteRounded />
@@ -115,7 +115,7 @@ function ItemTable() {
                 <Tooltip title="Delete product" arrow>
                   <IconButton
                     value="productId"
-                    onClick={() => handleDeleteButtonClick(product.id)}
+                    onClick={() => handleDeleteButton(product.id)}
                     sx={{ '&:hover': { color: 'error.main' } }}
                   >
                     <DeleteRounded />

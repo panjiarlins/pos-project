@@ -1,8 +1,10 @@
 import { Pagination } from '@mui/material';
 import { useSelector } from 'react-redux';
+import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 
-function PaginationTable({ searchParams, updateQueryParams }) {
+function PaginationTable() {
   const productPagination = useSelector((states) => states.productPagination);
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
 
   return (
     <Pagination

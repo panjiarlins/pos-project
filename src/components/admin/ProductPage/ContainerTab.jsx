@@ -3,9 +3,11 @@ import { Box, Tab } from '@mui/material';
 import { useSelector } from 'react-redux';
 import PaginationTable from './PaginationTable';
 import ContainerTable from './ContainerTable';
+import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 
-function ContainerTab({ searchParams, updateQueryParams }) {
+function ContainerTab() {
   const categories = useSelector((states) => states.categories);
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
 
   return (
     <>
@@ -47,7 +49,7 @@ function ContainerTab({ searchParams, updateQueryParams }) {
           ))}
         </TabContext>
       </Box>
-      <PaginationTable {...{ searchParams, updateQueryParams }} />
+      <PaginationTable />
     </>
   );
 }

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Button,
@@ -6,41 +5,55 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
 } from '@mui/material';
-import { useSingleFileInput, useValueInput } from '../../../../hooks';
+import { bool, func, number, shape, string } from 'prop-types';
+import { object, mixed, string as str } from 'yup';
+import { Form, Formik } from 'formik';
 import DetailsInput from './DetailsInput';
 import { asyncEditCategory } from '../../../../states/categories/action';
 
-function EditModal({
-  categoryData,
-  isEditModalOpen,
-  setIsEditModalOpen,
-  handleOnReload,
-}) {
+function EditModal({ categoryData, isEditModalOpen, setIsEditModalOpen }) {
   const dispatch = useDispatch();
-  const [categoryId, setCategoryId] = useState();
-  const [name, handleNameChange, setName] = useValueInput('');
-  const [image, handleImageChange, setImage] = useSingleFileInput(null);
 
-  useEffect(() => {
-    setCategoryId(categoryData.id);
-    setName(categoryData.name || '');
-    setImage(null);
-  }, [categoryData]);
+  const initialValues = {
+    name: categoryData.name || '',
+    image: null,
+    imageURL: categoryData.id
+      ? `${import.meta.env.VITE_API_URL}/categories/image/${categoryData.id}`
+      : '',
+  };
 
-  const handleOnSave = () => {
-    const formData = new FormData();
-    formData.append('name', name);
-    if (image) formData.append('image', image);
-    dispatch(asyncEditCategory(categoryId, formData))
-      .then(() => {
-        handleOnReload();
-        setIsEditModalOpen(false);
-        setName('');
-        setImage(null);
+  const validationSchema = object({
+    name: str().required(),
+    image: mixed()
+      .nullable()
+      .test('is-file', 'Image must be a file', (value) => {
+        if (!value) return true;
+        return value instanceof File;
       })
-      .catch((error) => console.log(error));
+      .test('is-image', 'File must be an image', (value) => {
+        if (!value) return true;
+        return value.type.startsWith('image/');
+      })
+      .test('file-size', 'File size must be ≤ 1MB', (value) => {
+        if (!value) return true;
+        return value.size <= 1024 * 1024; // 1MB = 1024 * 1024 bytes
+      }),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
+    const formData = new FormData();
+    if (values.name !== categoryData.name) formData.append('name', values.name);
+    if (values.image) formData.append('image', values.image);
+    dispatch(asyncEditCategory({ categoryId: categoryData.id, formData })).then(
+      (isSuccess) => {
+        if (isSuccess) {
+          URL.revokeObjectURL(values.imageURL);
+          resetForm();
+          setIsEditModalOpen(false);
+        }
+      }
+    );
   };
 
   return (
@@ -49,25 +62,40 @@ function EditModal({
       open={isEditModalOpen}
       onClose={() => setIsEditModalOpen(false)}
     >
-      <DialogTitle>Edit Category</DialogTitle>
-      <DialogContent>
-        <Stack spacing={4}>
-          <DetailsInput
-            {...{
-              handleImageChange,
-              name,
-              handleNameChange,
-            }}
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" variant="contained" onClick={handleOnSave}>
-          Save
-        </Button>
-      </DialogActions>
+      <Formik
+        validateOnMount
+        {...{ initialValues, validationSchema, onSubmit }}
+      >
+        {(formik) => (
+          <Form>
+            <DialogTitle>Edit Category</DialogTitle>
+            <DialogContent>
+              <DetailsInput />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                type="submit"
+                color="error"
+                variant="contained"
+                disabled={!formik.isValid || !formik.dirty}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Form>
+        )}
+      </Formik>
     </Dialog>
   );
 }
+
+EditModal.propTypes = {
+  categoryData: shape({
+    id: number,
+    name: string,
+  }).isRequired,
+  isEditModalOpen: bool.isRequired,
+  setIsEditModalOpen: func.isRequired,
+};
 
 export default EditModal;

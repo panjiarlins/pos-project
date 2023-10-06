@@ -5,33 +5,54 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
 } from '@mui/material';
-import { useSingleFileInput, useValueInput } from '../../../../hooks';
-import { asyncCreateCategory } from '../../../../states/categories/action';
+import { useSearchParams } from 'react-router-dom';
+import { bool, func } from 'prop-types';
+import { Form, Formik } from 'formik';
+import { mixed, string, object } from 'yup';
+import {
+  asyncCreateCategory,
+  asyncReceiveCategories,
+} from '../../../../states/categories/action';
 import DetailsInput from './DetailsInput';
 
-function CreateModal({
-  isCreateModalOpen,
-  setIsCreateModalOpen,
-  handleOnReload,
-}) {
+function CreateModal({ isCreateModalOpen, setIsCreateModalOpen }) {
   const dispatch = useDispatch();
-  const [name, handleNameChange, setName] = useValueInput('');
-  const [image, handleImageChange, setImage] = useSingleFileInput(null);
+  const [searchParams] = useSearchParams();
 
-  const handleOnSave = () => {
+  const initialValues = {
+    name: '',
+    image: null,
+    imageURL: '',
+  };
+
+  const validationSchema = object({
+    name: string().required(),
+    image: mixed()
+      .required()
+      .test('is-file', 'Image must be a file', (value) => value instanceof File)
+      .test('is-image', 'File must be an image', (value) =>
+        value.type.startsWith('image/')
+      )
+      .test(
+        'file-size',
+        'File size must be ≤ 1MB',
+        (value) => value.size <= 1024 * 1024 // 1MB = 1024 * 1024 bytes
+      ),
+  });
+
+  const onSubmit = (values, { resetForm }) => {
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('image', image);
-    dispatch(asyncCreateCategory(formData))
-      .then(() => {
-        handleOnReload();
+    formData.append('name', values.name);
+    formData.append('image', values.image);
+    dispatch(asyncCreateCategory(formData)).then((isSuccess) => {
+      if (isSuccess) {
+        dispatch(asyncReceiveCategories({ name: searchParams.get('name') }));
+        URL.revokeObjectURL(values.imageURL);
+        resetForm();
         setIsCreateModalOpen(false);
-        setName('');
-        setImage(null);
-      })
-      .catch((error) => console.log(error));
+      }
+    });
   };
 
   return (
@@ -40,25 +61,36 @@ function CreateModal({
       open={isCreateModalOpen}
       onClose={() => setIsCreateModalOpen(false)}
     >
-      <DialogTitle>New Category</DialogTitle>
-      <DialogContent>
-        <Stack spacing={4}>
-          <DetailsInput
-            {...{
-              handleImageChange,
-              name,
-              handleNameChange,
-            }}
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button color="error" variant="contained" onClick={handleOnSave}>
-          Save
-        </Button>
-      </DialogActions>
+      <Formik
+        validateOnMount
+        {...{ initialValues, validationSchema, onSubmit }}
+      >
+        {(formik) => (
+          <Form>
+            <DialogTitle>New Category</DialogTitle>
+            <DialogContent>
+              <DetailsInput />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                type="submit"
+                color="error"
+                variant="contained"
+                disabled={!formik.isValid || !formik.dirty}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Form>
+        )}
+      </Formik>
     </Dialog>
   );
 }
+
+CreateModal.propTypes = {
+  isCreateModalOpen: bool.isRequired,
+  setIsCreateModalOpen: func.isRequired,
+};
 
 export default CreateModal;

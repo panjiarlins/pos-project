@@ -1,6 +1,6 @@
 import { AddCircleRounded } from '@mui/icons-material';
 import { Button, Tooltip } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CreateModal from './CreateProductModal/CreateModal';
 
 function CreateButton() {

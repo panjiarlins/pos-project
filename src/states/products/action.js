@@ -86,7 +86,6 @@ function asyncCreateProduct(formData) {
       dispatch(showLoading());
       await api.post('/products', formData);
       dispatch(setAlertActionCreator());
-      dispatch(asyncReceiveProducts());
       return true;
     } catch (err) {
       dispatch(setAlertActionCreator({ err }));
@@ -121,10 +120,8 @@ function asyncDeleteProduct(productId) {
       await api.delete(`/products/${productId}`);
       dispatch(deleteProductActionCreator(productId));
       dispatch(setAlertActionCreator());
-      return true;
     } catch (err) {
       dispatch(setAlertActionCreator({ err }));
-      return false;
     } finally {
       dispatch(hideLoading());
     }

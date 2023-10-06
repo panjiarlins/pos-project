@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import CreateModal from './CreateCategoryModal/CreateModal';
 
-function CreateButton({ handleOnReload }) {
+function CreateButton() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
@@ -19,13 +19,7 @@ function CreateButton({ handleOnReload }) {
           Category
         </Button>
       </Tooltip>
-      <CreateModal
-        {...{
-          isCreateModalOpen,
-          setIsCreateModalOpen,
-          handleOnReload,
-        }}
-      />
+      <CreateModal {...{ isCreateModalOpen, setIsCreateModalOpen }} />
     </>
   );
 }

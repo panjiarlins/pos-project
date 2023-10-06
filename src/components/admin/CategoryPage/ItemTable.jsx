@@ -14,21 +14,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import EditModal from './EditCategoryModal/EditModal';
 import { asyncDeleteCategory } from '../../../states/categories/action';
 
-function ItemTable({ handleOnReload }) {
+function ItemTable() {
   const dispatch = useDispatch();
   const categories = useSelector((states) => states.categories);
   const [categoryData, setCategoryData] = useState({});
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  const handleOnEditButton = (category) => {
+  const handleEditButton = (category) => {
     setCategoryData(category);
     setIsEditModalOpen(true);
   };
 
-  const handleOnDelete = (categoryId) => {
-    dispatch(asyncDeleteCategory(categoryId))
-      .then(handleOnReload)
-      .catch((error) => console.log(error));
+  const handleDeleteButton = (categoryId) => {
+    dispatch(asyncDeleteCategory(categoryId));
   };
 
   return (
@@ -56,12 +54,12 @@ function ItemTable({ handleOnReload }) {
               />
             </TableCell>
             <TableCell>{category.name}</TableCell>
-            <TableCell>{category.Products.length} Pcs</TableCell>
+            <TableCell>{category.total_products} pcs</TableCell>
             <TableCell>
               <Stack direction="row">
                 <Tooltip title="Edit category" arrow>
                   <IconButton
-                    onClick={() => handleOnEditButton(category)}
+                    onClick={() => handleEditButton(category)}
                     sx={{ '&:hover': { color: 'info.main' } }}
                   >
                     <EditNoteRounded />
@@ -70,7 +68,7 @@ function ItemTable({ handleOnReload }) {
                 <Tooltip title="Delete category" arrow>
                   <IconButton
                     value="categoryId"
-                    onClick={() => handleOnDelete(category.id)}
+                    onClick={() => handleDeleteButton(category.id)}
                     sx={{ '&:hover': { color: 'error.main' } }}
                   >
                     <DeleteRounded />
@@ -81,14 +79,7 @@ function ItemTable({ handleOnReload }) {
           </TableRow>
         ))}
       </TableBody>
-      <EditModal
-        {...{
-          categoryData,
-          isEditModalOpen,
-          setIsEditModalOpen,
-          handleOnReload,
-        }}
-      />
+      <EditModal {...{ categoryData, isEditModalOpen, setIsEditModalOpen }} />
     </>
   );
 }

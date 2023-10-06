@@ -1,12 +1,21 @@
 import { TextField } from '@mui/material';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { asyncReceiveCategories } from '../../../states/categories/action';
+import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 
-function SearchInput({ searchParams, updateQueryParams, handleOnReload }) {
+function SearchInput() {
+  const dispatch = useDispatch();
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
+
+  const handleSearch = () => {
+    dispatch(asyncReceiveCategories({ name: searchParams.get('name') }));
+  };
+
   useEffect(() => {
     // Create a debounce timer
-    const timerId = setTimeout(() => {
-      handleOnReload();
-    }, 300); // Adjust the delay as needed
+    // Adjust the delay as needed
+    const timerId = setTimeout(handleSearch, 300);
 
     // Clear the previous timer on each input change
     return () => clearTimeout(timerId);
@@ -20,7 +29,6 @@ function SearchInput({ searchParams, updateQueryParams, handleOnReload }) {
       variant="outlined"
       value={searchParams.get('name') || ''}
       onChange={({ target }) => updateQueryParams({ name: target.value })}
-      onKeyUp={({ key }) => key === 'Enter' && handleOnReload()}
       sx={{ width: { md: '50%' } }}
     />
   );

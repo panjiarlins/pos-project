@@ -1,7 +1,9 @@
-import React from 'react';
 import { Box, MenuItem, TextField } from '@mui/material';
+import useCustomSearchParams from '../../../hooks/useCustomSearchParams';
 
-function SelectOrderBy({ searchParams, updateQueryParams }) {
+function SelectOrderBy() {
+  const [searchParams, updateQueryParams] = useCustomSearchParams();
+
   return (
     <Box>
       <TextField
