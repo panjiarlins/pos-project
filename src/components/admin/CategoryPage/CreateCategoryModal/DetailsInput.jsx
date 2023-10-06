@@ -2,6 +2,7 @@ import {
   Avatar,
   FormControl,
   FormHelperText,
+  FormLabel,
   InputLabel,
   OutlinedInput,
   Stack,
@@ -11,17 +12,19 @@ import { Field } from 'formik';
 
 function DetailsInput() {
   return (
-    <Stack spacing={2}>
-      <Typography variant="h6">Category Details</Typography>
-      <Stack spacing={3}>
+    <Stack spacing={2} component="fieldset">
+      <Typography variant="h6" component="legend">
+        Category Details
+      </Typography>
+      <Stack spacing={1.5}>
         {/* Category Name Input */}
         <Field name="name">
-          {({ field, form }) => (
+          {({ field, meta }) => (
             <FormControl
               fullWidth
               required
               variant="outlined"
-              error={form.touched[field.name] && form.errors[field.name]}
+              error={meta.touched && !!meta.error}
             >
               <InputLabel htmlFor="name_input">Category name</InputLabel>
               <OutlinedInput
@@ -33,9 +36,7 @@ function DetailsInput() {
                 {...field}
               />
               <FormHelperText id="name_helper-text">
-                {form.touched[field.name]
-                  ? form.errors[field.name] || ' '
-                  : ' '}
+                {meta.touched ? meta.error || ' ' : ' '}
               </FormHelperText>
             </FormControl>
           )}
@@ -43,24 +44,21 @@ function DetailsInput() {
 
         {/* Category Image Input */}
         <Field name="image">
-          {({ field, form }) => (
+          {({ form, meta }) => (
             <FormControl
               fullWidth
               required
               variant="outlined"
-              error={form.touched[field.name] && form.errors[field.name]}
+              error={meta.touched && !!meta.error}
             >
-              <InputLabel htmlFor="image_input" shrink>
-                Category Image
-              </InputLabel>
+              <FormLabel htmlFor="image_input">Category Image</FormLabel>
               <Avatar
                 component="label"
                 htmlFor="image_input"
                 src={form.values.imageURL}
-                alt={field.value?.name}
+                alt={meta.value?.name}
                 variant="square"
                 sx={{
-                  mt: '1rem',
                   width: '10rem',
                   height: '10rem',
                   cursor: 'pointer',
@@ -79,15 +77,15 @@ function DetailsInput() {
                   URL.revokeObjectURL(form.values.imageURL); // Release the object URL when no longer needed to free up resources
                   await form.setFieldValue(
                     'imageURL', // imageURL for image preview
-                    target.files[0] ? URL.createObjectURL(target.files[0]) : ''
+                    target.files[0]
+                      ? URL.createObjectURL(target.files[0])
+                      : form.initialValues.imageURL
                   ); // Set imageURL
                   await form.setFieldTouched('image', true);
                 }}
               />
               <FormHelperText id="image_helper-text">
-                {form.touched[field.name]
-                  ? form.errors[field.name] || ' '
-                  : ' '}
+                {meta.touched ? meta.error || ' ' : ' '}
               </FormHelperText>
             </FormControl>
           )}
